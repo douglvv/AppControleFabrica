@@ -5,11 +5,15 @@ const { DataTypes } = require("sequelize")
 const db = require("../db/conn")
 
 const Cliente = db.define("Cliente",{
+    tipo:{
+        type: DataTypes.STRING(1),
+        allowNull:false,
+    },
     nome:{
         type: DataTypes.STRING,
         allowNull:false,
     },
-    cpf:{
+    cpfCnpj:{
         type: DataTypes.STRING(15),
         allowNull:false,
     },
@@ -18,7 +22,7 @@ const Cliente = db.define("Cliente",{
         allowNull:true,
     },
     numeroCasa:{
-        type: DataTypes.INTEGER(5),
+        type: DataTypes.STRING(6),
         allowNull:true,
     },
     complemento:{

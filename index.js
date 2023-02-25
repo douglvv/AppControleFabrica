@@ -34,11 +34,9 @@ app.get('/', function (req, res) {
     res.render('home')
    })
 
-// Rota dos Models
+//Rotas dos models
 const clienteRoutes = require("./routes/clienteRoutes");
 app.use("/cliente", clienteRoutes);
-
-
 
 //Inicia (escuta) a aplicação somente depois de conectar ao BD
 conn
