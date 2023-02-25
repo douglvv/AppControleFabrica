@@ -51,6 +51,44 @@ module.exports = class ClienteController {
             .catch((err) => console.log(err))
     }
 
+    static editarCliente(req, res) {
+        const id = req.params.id
+        Cliente.findOne({ where: { id: id }, raw: true })
+            .then((cliente) => {
+                res.render('cliente/editar', { cliente })
+            })
+            .catch((err) => console.log(err))
+    }
 
+    static editarClientePost(req, res) {
+        const id = req.body.id
+        const cliente = {
+            tipo: req.body.tipo,
+            nome: req.body.nome,
+            cpfCnpj: req.body.cpfCnpj,
+            rua: req.body.rua,
+            numeroCasa: req.body.numeroCasa,
+            complemento: req.body.complemento,
+            bairro: req.body.bairro,
+            cidade: req.body.cidade,
+            uf: req.body.uf,
+            email: req.body.email,
+            telefone: req.body.telefone,
+        }
+        Cliente.update(cliente, { where: { id: id } })
+            .then(() => {
+                res.redirect('/cliente')
+            })
+            .catch((err) => console.log(err))
+    }
+
+    static removerCliente(req, res) {
+        const id = req.body.id
+        Cliente.destroy({ where: { id: id } })
+            .then(() => {
+                res.redirect('/cliente')
+            })
+            .catch((err) => console.log(err))
+    }
 
 }
