@@ -43,7 +43,7 @@ const Cliente = db.define("Cliente",{
     },
     telefone:{
         type: DataTypes.STRING(12),
-        allowNull:true,
+        allowNull:false,
     },
     email:{
         type: DataTypes.STRING,

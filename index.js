@@ -24,10 +24,8 @@ app.use(express.static('public'))
 
 // Importa os Models para a criação das tabelas
 const Cliente = require("./models/Cliente");
-// const Usuario = require("./models/Usuario");
-// const Produto = require("./models/Produto");
-// const Pedido = require("./models/Pedido");
-// const Pedido_Detalhe = require("./models/Pedido_Detalhe");
+const Produto = require("./models/Produto")
+
 
 //Rota inicial da aplicação - antes do listen
 app.get('/', function (req, res) {
@@ -37,6 +35,10 @@ app.get('/', function (req, res) {
 //Rotas dos models
 const clienteRoutes = require("./routes/clienteRoutes");
 app.use("/cliente", clienteRoutes);
+
+const produtoRoutes = require("./routes/produtoRoutes");
+app.use("/produto", produtoRoutes);
+
 
 //Inicia (escuta) a aplicação somente depois de conectar ao BD
 conn
