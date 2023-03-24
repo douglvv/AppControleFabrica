@@ -25,6 +25,7 @@ app.use(express.static('public'))
 // Importa os Models para a criação das tabelas
 const Cliente = require("./models/Cliente");
 const Produto = require("./models/Produto")
+const Venda = require("./models/Venda")
 
 
 //Rota inicial da aplicação - antes do listen
@@ -38,6 +39,9 @@ app.use("/cliente", clienteRoutes);
 
 const produtoRoutes = require("./routes/produtoRoutes");
 app.use("/produto", produtoRoutes);
+
+const vendaRoutes = require("./routes/vendaRoutes");
+app.use("/venda", vendaRoutes);
 
 
 //Inicia (escuta) a aplicação somente depois de conectar ao BD

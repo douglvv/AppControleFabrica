@@ -1,0 +1,56 @@
+<!-- search_produtos.handlebars -->
+<div class="container">
+<!-- Search form -->
+<form class="form-inline mb-3" action="/venda/procurarProduto" method="POST">
+
+  <div class="form-group row">
+    <label for="nomeProduto">Pesquisar Produto</label>
+    <div class="col">
+      <input type="text" class="form-control mb-2" name="nomeProduto" placeholder="Digite o nome do Produto">
+    </div>
+    <div class="col">
+      <button class="btn btn-primary" type="submit">Procurar</button>  
+    </div>
+  </div>
+</form>
+
+<!-- Products list -->
+{{#if produtos.length}}
+<div class="card " style="width: 50%">
+  <div class="card-header">Produtos encontrados</div>
+  <ul class="list-group list-group-flush">
+    {{#each produtos}}
+    <li class="list-group-item">
+      <span class="badge badge-danger text-primary " style="font-size: 1rem; color: black">{{this.nomeProduto}}</span>
+      <button type="button" class="btnAddItem btn btn-primary btn-sm" ProdutoId="{{this.id}}">Adicionar Produto</button>
+    </li>
+    {{/each}}
+  </ul>
+  {{else}}
+  <p>Produto não encontrado</p>
+</div>
+{{/if}}
+
+
+</div>
+<!-- Script to handle the add to sale button click event -->
+<script>
+  const btnAddItem = document.querySelectorAll('.btnAddItem');
+  btnAddItem.forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const ProdutoId = btn.getAttribute('ProdutoId');
+      const res = await fetch('/venda/addProduto', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ ProdutoId })
+      });
+      if (res.ok) {
+        alert('Produto adicionado com sucesso!');
+      } else {
+        alert('Erro ao adicionar o produto!');
+      }
+    });
+  });
+</script>
