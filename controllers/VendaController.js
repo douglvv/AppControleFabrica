@@ -63,7 +63,6 @@ module.exports = class VendaController {
         if (req.body.nomeProduto) {
           nomeProduto = req.body.nomeProduto.trim();
         }
-        console.log(nomeProduto)
         await Produto.findAll({
           where: {
             nomeProduto: {
