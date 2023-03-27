@@ -4,8 +4,13 @@ const db = require("../db/conn")
 
 const Produto = require("../models/Produto");
 const Cliente = require("./Cliente");
+const VendaProduto = require("../models/VendaProduto")
 
 const Venda = db.define("Venda",{
+    status:{
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+    },
     data:{
         type: DataTypes.STRING,
         allowNull:false,
@@ -19,7 +24,7 @@ const Venda = db.define("Venda",{
 Venda.belongsTo(Cliente)
 Cliente.hasMany(Venda)
 
-Venda.belongsToMany(Produto, { through: 'VendaProduto' });
-Produto.belongsToMany(Venda, { through: 'VendaProduto' });
+Venda.belongsToMany(Produto, { through: VendaProduto });
+Produto.belongsToMany(Venda, { through: VendaProduto });
 
 module.exports = Venda;

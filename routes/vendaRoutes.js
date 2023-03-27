@@ -8,8 +8,7 @@ router.post("/criarPost", VendaController.criarVendaPost);
 router.get("/editar/:id", VendaController.editarVenda);
 router.post("/editarPost", VendaController.editarVendaPost);
 router.post("/remover", VendaController.removerVenda);
-// router.get("/venda", VendaController.detalhesVenda);
 router.post('/procurarProduto', VendaController.procurarProduto);
-// router.post('/addProduto',VendaController.addProduto);
+router.post('/addProduto',VendaController.addProduto);
 
 module.exports = router;

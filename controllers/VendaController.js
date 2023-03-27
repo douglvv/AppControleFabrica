@@ -2,6 +2,7 @@ const { Op } = require('sequelize')
 const Cliente = require('../models/Cliente.js')
 const Produto = require('../models/Produto.js')
 const Venda = require('../models/Venda.js')
+const VendaProduto = require('../models/VendaProduto.js')
 
 module.exports = class VendaController {
     static mostrarVendas(req, res) {
@@ -45,8 +46,8 @@ module.exports = class VendaController {
     }
 
     static criarVendaPost(req, res) {
-        console.log(req.body)
         const venda = {
+            status: true,
             data: req.body.data,
             valorTotal: 0,
             ClienteId: req.body.cliente
@@ -61,61 +62,76 @@ module.exports = class VendaController {
     static async procurarProduto(req, res) {
         let nomeProduto = '';
         if (req.body.nomeProduto) {
-          nomeProduto = req.body.nomeProduto.trim();
+            nomeProduto = req.body.nomeProduto.trim();
         }
         await Produto.findAll({
-          where: {
-            nomeProduto: {
-              [Op.like]: `%${nomeProduto}%` // case-insensitive search
-            },            
-          }
+            where: {
+                nomeProduto: {
+                    [Op.like]: `%${nomeProduto}%` // case-insensitive search
+                },
+            }
         }).then((data) => {
             const produtos = data.map((result) => result.get({ plain: true }))
-            res.render('venda/venda', {produtos})
+            res.render('venda/venda', { produtos })
         })
-        .catch((err) => console.log(err))
-        // res.render('venda/venda', { produtos });
-
+            .catch((err) => console.log(err))
     }
-      
+
+    static async addProduto(req, res) {
+        const id = req.body.id; //id do produto
+        const produto = await Produto.findByPk(id);
+
+        // Verifica se o produto existe
+        if (!produto) {
+            res.status(404).send('Produto não encontrado.');
+            return;
+        }
+
+        // Encontra a venda ativa
+        const vendaAtiva = await Venda.findOne({
+            where: {
+                status: true
+            }
+        })
+        // console.log(vendaAtiva)
+
+        // Adiciona o produto a venda
+        var vendaProduto = {
+            qtd: 2,
+            valor: produto.valorUnitario,
+            VendaId: vendaAtiva.id,
+            ProdutoId: produto.id
+        }
+
+        VendaProduto.create(vendaProduto)
+
+        // Atualiza o valor total da venda
+        var valorTotal = parseFloat(vendaAtiva.valorTotal);
+        // console.log(valorTotal)
         
+        valorTotal += (parseFloat(vendaProduto.qtd) * parseFloat(vendaProduto.valor))
+        // console.log(valorTotal)
 
+        const vendaAtualizada = {
+            id: vendaAtiva.id,
+            status: vendaAtiva.status,
+            data: vendaAtiva.data,
+            valorTotal: valorTotal
+        }
 
-    // async addProduto(req, res) {
-    //     const { ProdutoId } = req.body.ProdutoId;
-    //     const produto = await Produto.findByPk(ProdutoId);
+        Venda.update(vendaAtualizada, {where: { status: true}})
+            .then(() => {
+            res.render('venda/venda', {vendaAtiva: vendaAtualizada})
+            console.log("Deu boa")
+        })
+            .catch((err) => console.log(err))
 
-    //     // Check if the produto exists
-    //     if (!produto) {
-    //         res.status(404).send('Produto não encontrado');
-    //         return;
-    //     }
-    //     // Create or find the user's active sale
-    //     const venda = await Venda.findByPk(58)
-        
-    //     const vendaProduto = await VendaProduto.findAll({
-    //         where: {
-    //           VendaId: venda.id,
-    //           produtoId: produto.id
-    //         }
-    //       });
-    
-    // }
-
-    // static async detalhesVenda(req, res) {
-    //     vendaProdutos = VendaProdutos.findAll()
-    //     let ordenar = 'ASC'
-    //     Produtos.findAll({
-    //         order: [['nome', ordenar]],
-    //         limit: 1000,
-    //     })
-    //         .then((data) => {
-    //             res.render('venda/criar', {
-    //                 clientes, data_atual
-    //             })
-    //         })
-    //         .catch((err) => console.log(err))
-    // }
+        // // Update the quantity if the sale item already exists
+        // if (!created2) {
+        //     saleItem.quantity += 1;
+        //     await saleItem.save();
+        // }
+    }
 
     static editarVenda(req, res) {
         const id = req.params.id

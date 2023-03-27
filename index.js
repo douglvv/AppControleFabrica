@@ -1,3 +1,4 @@
+
 const express = require("express");
 const exphbs = require("express-handlebars");
 // const session = require("express-session");
@@ -26,6 +27,7 @@ app.use(express.static('public'))
 const Cliente = require("./models/Cliente");
 const Produto = require("./models/Produto")
 const Venda = require("./models/Venda")
+const VendaProduto = require("./models/VendaProduto")
 
 
 //Rota inicial da aplicação - antes do listen

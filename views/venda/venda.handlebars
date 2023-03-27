@@ -1,6 +1,6 @@
 <!-- search_produtos.handlebars -->
 <div class="container">
-  <div class="container">
+  <div>
     <!-- Search form -->
     <form class="form-inline mb-3" style="width: 50%;" action="/venda/procurarProduto" method="POST">
 
@@ -12,12 +12,6 @@
         <div class="col">
           <button class="btn btn-primary col" type="submit">Procurar</button>
         </div>
-
-        {{!-- <div class="input-group mb-3" style="width: 50%;">
-          <input type="text" class="form-control" placeholder="Recipient's username" aria-label="Recipient's username"
-            aria-describedby="button-addon2">
-          <button class="btn btn-outline-secondary" type="button" id="button-addon2">Button</button>
-        </div> --}}
       </div>
     </form>
 
@@ -42,19 +36,12 @@
             <td>{{this.valorUnitario}}</td>
             <td>
               <span class="actions">
-                {{!-- <button type="button" onClick="aumentarQtd(qtdItens)">
-                  <i class="bi bi-chevron-double-up" id="+"></i>
-                </button>
-                <button type="button" onclick="#">
-                  <i class="bi bi-chevron-double-down" id="-"></i>
-                </button> --}}
                 <form action="/venda/addProduto" method="POST">
                   <input type="hidden" name="id" value={{this.id}}>
                   <button type="submit" data-toggle="tooltip" data-placement="top" data-title="Adicionar ao carrinho">
                     <i class="bi bi-plus-circle" id="add"></i>
                   </button>
                 </form>
-
               </span>
             </td>
           </tr>
@@ -67,14 +54,14 @@
       <p>Produto não encontrado</p>
     </div>
     {{/if}}
-
+  </div>
+  <div class="card-body">
+    <p><strong>ID:</strong> {{vendaAtiva.id}}</p>
+    <p><strong>Valor Total:</strong> R$ {{vendaAtiva.valorTotal}}</p>
   </div>
 </div>
 
 
-
-
-</div>
 <!-- Script to handle the add to sale button click event -->
 <script>
   function aumentarQtd(id) {
@@ -91,23 +78,4 @@
       elemento.value = newValue;
     }
   }
-
-  const btnAddItem = document.querySelectorAll('.btnAddItem');
-  btnAddItem.forEach(btn => {
-    btn.addEventListener('click', async () => {
-      const ProdutoId = btn.getAttribute('ProdutoId');
-      const res = await fetch('/venda/addProduto', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ ProdutoId })
-      });
-      if (res.ok) {
-        alert('Produto adicionado com sucesso!');
-      } else {
-        alert('Erro ao adicionar o produto!');
-      }
-    });
-  });
 </script>
