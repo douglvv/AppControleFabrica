@@ -11,6 +11,10 @@ module.exports = class VendaController {
         let order = 'DESC'
 
         Venda.findAll({
+            include: [{
+                model: Cliente,
+                required: true
+            }],
             order: [['createdAt', order]],
             limit: 1000,
         })
@@ -60,6 +64,14 @@ module.exports = class VendaController {
     }
 
     static async procurarProduto(req, res) {
+        // Criar um middleware para executar na route antes do add produto para sempre ter o objeto de venda ativa
+        // Encontra a venda ativa
+        const vendaAtiva = await Venda.findOne({
+            where: {
+                status: true
+            }
+        })
+
         let nomeProduto = '';
         if (req.body.nomeProduto) {
             nomeProduto = req.body.nomeProduto.trim();
@@ -72,7 +84,7 @@ module.exports = class VendaController {
             }
         }).then((data) => {
             const produtos = data.map((result) => result.get({ plain: true }))
-            res.render('venda/venda', { produtos })
+            res.render('venda/venda', { produtos, vendaAtiva: vendaAtiva, locals: { vendaAtiva: vendaAtiva } });
         })
             .catch((err) => console.log(err))
     }
@@ -84,53 +96,57 @@ module.exports = class VendaController {
         // Verifica se o produto existe
         if (!produto) {
             res.status(404).send('Produto não encontrado.');
-            return;
+            return
         }
 
+        // Criar um middleware para executar na route antes do add produto para sempre ter o objeto de venda ativa
         // Encontra a venda ativa
         const vendaAtiva = await Venda.findOne({
             where: {
                 status: true
             }
         })
-        // console.log(vendaAtiva)
 
-        // Adiciona o produto a venda
-        var vendaProduto = {
-            qtd: 2,
-            valor: produto.valorUnitario,
-            VendaId: vendaAtiva.id,
-            ProdutoId: produto.id
+        // Verifica se o produto já está na venda ativa
+        const vendaProdutoExistente = await VendaProduto.findOne({
+            where: {
+                VendaId: vendaAtiva.id,
+                ProdutoId: produto.id
+            }
+        })
+
+        if (vendaProdutoExistente) {
+            // O produto já está na venda, incrementa a quantidade
+            vendaProdutoExistente.qtd += req.body.qtd;
+            await vendaProdutoExistente.save();
+        } else {
+            // Adiciona o produto a venda
+            const vendaProduto = {
+                qtd: req.body.qtd,
+                valor: produto.valorUnitario,
+                VendaId: vendaAtiva.id,
+                ProdutoId: produto.id
+            };
+
+            await VendaProduto.create(vendaProduto);
         }
 
-        VendaProduto.create(vendaProduto)
-
         // Atualiza o valor total da venda
-        var valorTotal = parseFloat(vendaAtiva.valorTotal);
-        // console.log(valorTotal)
-        
-        valorTotal += (parseFloat(vendaProduto.qtd) * parseFloat(vendaProduto.valor))
-        // console.log(valorTotal)
+        let valorTotal = parseFloat(vendaAtiva.valorTotal);
+        valorTotal += parseFloat(produto.valorUnitario * req.body.qtd);
 
         const vendaAtualizada = {
             id: vendaAtiva.id,
             status: vendaAtiva.status,
             data: vendaAtiva.data,
             valorTotal: valorTotal
-        }
+        };
 
-        Venda.update(vendaAtualizada, {where: { status: true}})
-            .then(() => {
-            res.render('venda/venda', {vendaAtiva: vendaAtualizada})
-            console.log("Deu boa")
-        })
-            .catch((err) => console.log(err))
+        await Venda.update(vendaAtualizada, { where: { status: true } });
 
-        // // Update the quantity if the sale item already exists
-        // if (!created2) {
-        //     saleItem.quantity += 1;
-        //     await saleItem.save();
-        // }
+
+        // vendaproduto findall where idvenda = vendativa.id
+        res.render('venda/venda', { vendaAtiva: vendaAtualizada });
     }
 
     static editarVenda(req, res) {
