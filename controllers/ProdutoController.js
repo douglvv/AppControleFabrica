@@ -37,10 +37,13 @@ module.exports = class ProdutoController {
             qtd: req.body.qtd,
             valorUnitario: req.body.valorUnitario,
         }
-        Produto.create(produto)
+        Produto.create(produto) 
             .then(() => {
+            req.flash('mensagem', 'Produto criado com sucesso!')
+            req.session.save(() => {
                 res.redirect('/produto/')
             })
+        })
             .catch((err) => console.log(err))
     }
     
@@ -63,8 +66,11 @@ module.exports = class ProdutoController {
         }
         Produto.update(produto, { where: { id: id } })
             .then(() => {
+                req.flash('mensagem', 'Produto alterado com sucesso!')
+                req.session.save(() => {
                 res.redirect('/produto')
             })
+        })
             .catch((err) => console.log(err))
     }
 
@@ -72,8 +78,11 @@ module.exports = class ProdutoController {
         const id = req.body.id
         Produto.destroy({ where: { id: id } })
             .then(() => {
+                req.flash('mensagem', 'Produto removido com sucesso!')
+                req.session.save(() => {
                 res.redirect('/produto')
             })
+        })
             .catch((err) => console.log(err))
             
     }

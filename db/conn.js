@@ -1,7 +1,7 @@
 const { Sequelize } = require('sequelize')
 
 const sequelize = new Sequelize('appControleFabrica',
-'root','megafockeR123',{
+'root','4800732',{
     host: 'localhost',
     dialect: 'mysql',
     port: 3306

@@ -1,6 +1,6 @@
 <div class="container-xl">
     <div class="table-responsive">
-        <div class="table-wrapper" style="margin: auto;">
+        <div class="table-wrapper" style="max-width: 600px; margin: auto;">
             <div class="table-title">
                 <div class="row">
                     <div class="col-mb-3">
@@ -23,11 +23,10 @@
                 <div class="mb-3">
                     <label for="qtd" class="form-label">Quantidade</label>
                     <input type="number" step="1.0" class="form-control" name="qtd" placeholder="Nome do Produto" value={{produto.qtd}} required>
-                </div>
                 <div class="mb-3">
                     <label for="valorUnitario" class="form-label">Valor Unitário</label>
-                    <input type="text" class="form-control" name="valorUnitario" placeholder="Nome do Produto" value={{produto.valorUnitario}} required>
-                </div>
+                    <input type="number" class="form-control" name="valorUnitario" placeholder="Valor unitário do Produto" step="0.01" min="0" value={{produto.valorUnitario}} required>
+                    </div>
                 
                 <center>
                 <button type="submit" class="btn btn-success"><i class="bi bi-check-circle-fill"></i> Salvar</button>

@@ -1,3 +1,5 @@
+// Nome,cpf, rua, numero, bairro, cpf, e-mail
+
 const { DataTypes } = require("sequelize")
 
 const db = require("../db/conn")

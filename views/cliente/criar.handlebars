@@ -1,3 +1,4 @@
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <div class="container-xl">
     <div class="table-responsive">
         <div class="table-wrapper" style="max-width: 600px; margin: auto;">
@@ -8,53 +9,209 @@
                     </div>
                 </div>
             </div>
-
             <form action="/cliente/criarPost" method="POST">
-            <div class="form-control">
-                <div class="mb-3">
+            <div class="mb-3">
                     <label for="tipo" class="form-label">Tipo (F ou J)*</label>
-                    <input type="text" class="form-control" name="tipo" placeholder="Pessoa física ou jurídica" required>
+                    <input type="text" class="form-control" name="tipo" id="tipo" placeholder="Pessoa física ou jurídica" required>
+                    <div class="invalid-feedback">
+                        Digite "F" para pessoa física, ou "J" para pessoa jurídica.
+                    </div>
                 </div>
+                <script>
+                $(function() {
+                    $('#tipo').on('input', function() {
+                        var val = $(this).val();
+                        if (!/^([FJfj])$/.test(val)) { // Verifica se é "F" ou "J"
+                            $(this).addClass('is-invalid');
+                        } else {
+                            $(this).removeClass('is-invalid');
+                        }
+                    });
+                });
+                </script>
+
                 <div class="mb-3">
                     <label for="nome" class="form-label">Nome/Razao Social*</label>
-                    <input type="text" class="form-control" name="nome" placeholder="Ex: Cliente LTDA" required>
-                </div>
+                    <input type="text" class="form-control" name="nome" id="nome" placeholder="Ex: Cliente LTDA" pattern="[A-Za-z]+" required>
+                    <div class="invalid-feedback">
+                        Digite apenas letras no campo de nome.
+                    </div>
+                    </div>
+                    <script>
+                    $(function() {
+                        $('#nome').on('input', function() {
+                        var val = $(this).val();
+                        if (/[\d]/.test(val)) {
+                            $(this).addClass('is-invalid');
+                        } else {
+                            $(this).removeClass('is-invalid');
+                        }
+                        });
+                    });
+                    </script>
                 <div class="mb-3">
                     <label for="cpfCnpj" class="form-label">CPF/CNPJ*</label>
-                    <input type="text" class="form-control" name="cpfCnpj" placeholder="Ex: 12345678000123" required>
-                </div>
+                    <input type="text" class="form-control" name="cpfCnpj" id="cpfCnpj" placeholder="Ex: 12345678000123" pattern="(\d{3}\.?\d{3}\.?\d{3}-?\d{2})|(\d{2}\.?\d{3}\.?\d{3}\/?\d{4}-?\d{2})" required>
+                    <div class="invalid-feedback">
+                        Digite um CPF ou CNPJ válido no campo de CPF/CNPJ.
+                    </div>
+                    </div>
+                    <script>
+                    $(function() {      
+                        $('#cpfCnpj').on('input', function() {
+                        var val = $(this).val();
+                        if (/^(\d{3}\.?\d{3}\.?\d{3}-?\d{2})|(\d{2}\.?\d{3}\.?\d{3}\/?\d{4}-?\d{2})$/.test(val)) {
+                            $(this).removeClass('is-invalid');
+                        } else {
+                            $(this).addClass('is-invalid');
+                        }
+                        });
+                    });
+                    </script>
                 <div class="mb-3">
                     <label for="telefone" class="form-label">Telefone*</label>
-                    <input type="text" class="form-control" name="telefone" placeholder="Ex: 4712345678"required>
-                </div>
+                    <input type="text" class="form-control" name="telefone" id="telefone" placeholder="Ex: 4712345678" required>
+                    <div class="invalid-feedback">
+                        O número de telefone deve ter no máximo 12 dígitos.
+                    </div>
+                    </div>
+                    <script>
+                    $(function() {
+                        $('#telefone').on('input', function() {
+                        var val = $(this).val();
+                            if (!/^\d+$/.test(val)) {
+                                  $(this).val(val.replace(/[^\d]/g, ''));
+                                    }
+                                    if (val.length > 12) {
+                                        $(this).addClass('is-invalid');
+                                    } else {
+                                        $(this).removeClass('is-invalid');
+                                    }
+                                    });
+                                });
+                    </script>
                 <div class="mb-3">
-                    <label for="email" class="form-label">E-mail</label>
-                    <input type="email" class="form-control" name="email" placeholder="Ex: joao@joao.com">
-                </div>
+                    <label for="email" class="form-label">E-mail*</label>
+                    <input type="email" class="form-control" name="email" id="email" placeholder="Ex: seuemail@exemplo.com" required>
+                    <div class="invalid-feedback">
+                        O e-mail deve ter no máximo 20 caracteres e seguir o formato de e-mail válido.
+                    </div>
+                    </div>
+                    <script>
+                    $(function() {
+                        $('#email').on('input', function() {
+                        var val = $(this).val();
+                        if (val.length > 20 || !/^\S+@\S+\.\S+$/.test(val)) {
+                            $(this).addClass('is-invalid');
+                        } else {
+                            $(this).removeClass('is-invalid');
+                        }
+                        });
+                    });
+                    </script>
                 <div class="mb-3">
-                    <label for="rua" class="form-label">Rua</label>
-                    <input type="text" class="form-control" name="rua" placeholder="Ex: Rua João da Silva">
+                    <div>
+                        <div class="mb-3">
+                            <label for="rua" class="form-label">Rua*</label>
+                            <input type="text" class="form-control" name="rua" id="rua" placeholder="Ex: Rua Exemplo, 123">
+                            <div class="invalid-feedback">
+                                A rua deve ter no máximo 40 caracteres.
+                            </div>
+                            </div>
+                            <script>
+                            $(function() {
+                                $('#rua').on('input', function() {
+                                var val = $(this).val();
+                                if (val.length > 40) {
+                                    $(this).addClass('is-invalid');
+                                } else {
+                                    $(this).removeClass('is-invalid');
+                                }
+                                });
+                            });
+                            </script>
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label for="numeroCasa" class="form-label">nº</label>
-                    <input type="text" class="form-control" name="numeroCasa" placeholder="Ex: 123">
-                </div>
+                       <div class="mb-3">
+                        <label for="numeroCasa" class="form-label">nº</label>
+                        <input type="text" class="form-control" name="numeroCasa" id="numeroCasa" placeholder="Ex: 123">
+                            <div class="invalid-feedback">
+                                O número da casa deve ter no máximo 6 dígitos.
+                                </div>
+                                </div>
+                                <script>
+                                    $(function() {
+                                        $('#numeroCasa').on('input', function() {
+                                        var val = $(this).val();
+                                        if (!/^\d+$/.test(val)) {
+                                            $(this).val(val.replace(/[^\d]/g, ''));
+                                        }
+                                        if (val.length > 6) {
+                                            $(this).addClass('is-invalid');
+                                        } else {
+                                            $(this).removeClass('is-invalid');
+                                        }
+                                        });
+                                    });
+                                    </script>
                 <div class="mb-3">
                     <label for="complemento" class="form-label">Complemento</label>
                     <input type="text" class="form-control" name="complemento" placeholder="Ex: Apt 3">
-                </div>
-                <div class="mb-3">
+                    <div class="invalid-feedback">Somente até 30 caracteres são permitidos</div>
+                        </div>
+                        <script>
+                            $(function() {
+                                $('input[name="complemento"]').on('input', function() {
+                                    var val = $(this).val();
+                                    if (val.length > 30) {
+                                        $(this).addClass('is-invalid');
+                                    } else {
+                                        $(this).removeClass('is-invalid');
+                                    }
+                                });
+                            }); 
+                        </script>
+                        <div class="mb-3">
                     <label for="bairro" class="form-label">Bairro</label>
-                    <input type="text" class="form-control" name="bairro" placeholder="Ex: Vila Pinto">
+                    <input type="text" class="form-control" name="bairro" placeholder="Ex: Bairro lobos">
+                <div class="invalid-feedback">
+                    Digite no máximo 40 caracteres
                 </div>
-                <div class="mb-3">
-                    <label for="cidade" class="form-label">Bairro</label>
-                    <input type="text" class="form-control" name="cidade" placeholder="Ex: São Crispim do Pau Fincado">
                 </div>
+                <script>
+                     $(function() {
+                                $('input[name="bairro"]').on('input', function() {
+                                    var val = $(this).val();
+                                    if (val.length > 30) {
+                                        $(this).addClass('is-invalid');
+                                    } else {
+                                        $(this).removeClass('is-invalid');
+                                    }
+                                });
+                            });
+                </script>
                 <div class="mb-3">
+                    <label for="cidade" class="form-label">Cidade</label>
+                    <input type="text" class="form-control" name="cidade" placeholder="Ex: cidade das lobas">
+                <div class="invalid-feedback">
+                    Digite no máximo 40 caracteres
+                </div>
+                </div>
+                <script>
+                     $(function() {
+                                $('input[name="cidade"]').on('input', function() {
+                                    var val = $(this).val();
+                                    if (val.length > 30) {
+                                        $(this).addClass('is-invalid');
+                                    } else {
+                                        $(this).removeClass('is-invalid');
+                                    }
+                                });
+                            });
+                </script>
+              <div class="mb-3">
                     <label for="uf" class="form-label">UF</label>
-                    <input type="text" class="form-control" name="uf" placeholder="Ex: PR">
-                </div>
+                    <input type="text" class="form-control" name="uf" maxlength="2" placeholder="Ex: PR" required>
                 <center>
                 <button type="submit" class="btn btn-success"><i class="bi bi-check-circle-fill"></i> Salvar</button>
                 <a href="/cliente" class="btn btn-danger"><i class="bi bi-x-circle-fill"></i> Cancelar</a>

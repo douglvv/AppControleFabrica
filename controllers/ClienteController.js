@@ -46,8 +46,11 @@ module.exports = class ClienteController {
         }
         Cliente.create(cliente)
             .then(() => {
+                req.flash('mensagem', 'Produto criado com sucesso!')
+            req.session.save(() => {
                 res.redirect('/cliente/')
             })
+        })
             .catch((err) => console.log(err))
     }
 
@@ -77,8 +80,11 @@ module.exports = class ClienteController {
         }
         Cliente.update(cliente, { where: { id: id } })
             .then(() => {
+                req.flash('mensagem', 'Cliente editado com sucesso!')
+                req.session.save(() => {
                 res.redirect('/cliente')
             })
+        })
             .catch((err) => console.log(err))
     }
 
@@ -86,8 +92,11 @@ module.exports = class ClienteController {
         const id = req.body.id
         Cliente.destroy({ where: { id: id } })
             .then(() => {
+                req.flash('mensagem', 'Cliente removido com sucesso!')
+                req.session.save(() => {
                 res.redirect('/cliente')
             })
+        })
             .catch((err) => console.log(err))
     }
 

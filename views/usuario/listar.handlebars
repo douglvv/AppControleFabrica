@@ -5,10 +5,10 @@
             <div class="table-title">
                 <div class="row">
                     <div class="col-sm-5">
-                        <h4>Vendas</h4>
+                        <h4>Usuários</h4>
                     </div>
                     <div class="col-sm-7">
-                        <a href="/venda/criar" class="btn btn-success"><i class="bi bi-plus-circle-fill"></i><span> Novo</span></a>						
+                        <a href="/usuario/criar" class="btn btn-success"><i class="bi bi-plus-circle-fill"></i><span> Novo</span></a>						
                     </div>
                 </div>
             </div>
@@ -17,29 +17,26 @@
         <thead>
             <tr>
                 <th>#</th>
-                <th>Valor</th>
-                <th>Data</th>
-                <th>Cliente</th>    
-                <th>Ações</th>        
+                <th>Nome</th>
+                <th>email</th>
+                <th>Ações</th>
             </tr>
         </thead>
         <tbody>
         {{#each resultado}}
             <tr>
                 <td>{{this.id}}</td>
-                <td>{{this.valorTotal}}</td>
-                <td>{{this.data}}</td>
-                <td>{{this.ClienteId}}</td>
+                <td>{{this.nome}}</td>
+                <td>{{this.email}}</td>
                 <td>      
                     <span class="actions">
-                        <a href="/venda/editar/{{this.id}}" data-title="Editar"><i class="bi bi-pencil-fill" id="lapis"></i></a>
-                        <form action="/venda/remover" method="POST">
+                        <a href="/usuario/editar/{{this.id}}" data-title="Editar"><i class="bi bi-pencil-fill" id="lapis"></i></a>
+                        <form action="/usuario/remover" method="POST">
                             <input type="hidden" name="id" value={{this.id}}>
                             <button type="submit" data-toggle="tooltip" data-placement="top" data-title="Excluir">
                                 <i class="bi bi-trash3-fill" id="lixeira"></i>
                             </button>
                         </form>
-
                     </span>
                 </td>
             </tr>
@@ -51,7 +48,7 @@
     </div>
     </div>
     </div>
-     <!--Js do datatable com exportações-->
+    <!--Js do datatable com exportações-->
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
@@ -76,10 +73,16 @@
                 buttons: ['pdf', 'excel','csv','print'],
             }
         ],
+        columnDefs: [
+        {
+            targets: 3,
+            className: "dt-center",
+        }
+        ],
         order: [[0, 'desc']],
-        scrollX: true
 
         });
         
       });
     </script>
+	

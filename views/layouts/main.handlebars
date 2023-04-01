@@ -93,7 +93,14 @@
 
     </div>
     
-    <div class="w-100 m-3 pt-4 pb-4 bg-light rounded" style="overflow-y: scroll; overflow-x: scroll;">
+    <div class="w-100 m-3 pt-4 pb-4 bg-light rounded" style="overflow-y: scroll; overflow-x: scroll;">  
+      {{#if messages.mensagem}}
+    <br>
+      <div class="alert alert-success" role="alert" style="max-width: 350px; 
+      margin: auto;">
+        {{messages.mensagem}}
+        </div>
+        {{/if}}
       {{{ body }}}
     </div>
   </div>
