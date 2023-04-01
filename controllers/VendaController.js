@@ -53,25 +53,17 @@ module.exports = class VendaController {
         const venda = {
             status: true,
             data: req.body.data,
-            valorTotal: 0,
+            valorTotal: 0.00,
             ClienteId: req.body.cliente
         }
         Venda.create(venda)
             .then(() => {
-                res.render('venda/venda', { venda })
+                res.render('venda/venda', { vendaAtiva: venda })
             })
             .catch((err) => console.log(err))
     }
 
     static async procurarProduto(req, res) {
-        // Criar um middleware para executar na route antes do add produto para sempre ter o objeto de venda ativa
-        // Encontra a venda ativa
-        const vendaAtiva = await Venda.findOne({
-            where: {
-                status: true
-            }
-        })
-
         let nomeProduto = '';
         if (req.body.nomeProduto) {
             nomeProduto = req.body.nomeProduto.trim();
@@ -84,7 +76,13 @@ module.exports = class VendaController {
             }
         }).then((data) => {
             const produtos = data.map((result) => result.get({ plain: true }))
-            res.render('venda/venda', { produtos, vendaAtiva: vendaAtiva, locals: { vendaAtiva: vendaAtiva } });
+            const vendaAtiva = {
+            status: req.vendaAtiva.status,
+            data: req.vendaAtiva.data,
+            valorTotal: req.vendaAtiva.valorTotal,
+            ClienteId: req.vendaAtiva.ClienteId
+        };
+            res.render('venda/venda', { produtos, vendaAtiva: vendaAtiva});
         })
             .catch((err) => console.log(err))
     }
@@ -101,16 +99,12 @@ module.exports = class VendaController {
 
         // Criar um middleware para executar na route antes do add produto para sempre ter o objeto de venda ativa
         // Encontra a venda ativa
-        const vendaAtiva = await Venda.findOne({
-            where: {
-                status: true
-            }
-        })
+        const vendaAtiva = req.vendaAtiva
 
         // Verifica se o produto já está na venda ativa
         const vendaProdutoExistente = await VendaProduto.findOne({
             where: {
-                VendaId: vendaAtiva.id,
+                VendaId: vendaAtiva.id ,
                 ProdutoId: produto.id
             }
         })
@@ -132,8 +126,8 @@ module.exports = class VendaController {
         }
 
         // Atualiza o valor total da venda
-        let valorTotal = parseFloat(vendaAtiva.valorTotal);
-        valorTotal += parseFloat(produto.valorUnitario * req.body.qtd);
+        let valorTotal = parseFloat(vendaAtiva.valorTotal)
+        valorTotal += parseFloat(produto.valorUnitario * req.body.qtd)
 
         const vendaAtualizada = {
             id: vendaAtiva.id,
@@ -142,11 +136,13 @@ module.exports = class VendaController {
             valorTotal: valorTotal
         };
 
-        await Venda.update(vendaAtualizada, { where: { status: true } });
-
+        await Venda.update(vendaAtualizada, { where: { status: true } })
+        vendaAtiva.save()
 
         // vendaproduto findall where idvenda = vendativa.id
-        res.render('venda/venda', { vendaAtiva: vendaAtualizada });
+        res.render('venda/venda',{vendaAtiva: vendaAtualizada})
+        console.log(vendaAtiva)
+        
     }
 
     static editarVenda(req, res) {

@@ -26,7 +26,7 @@
             <th>Nome</th>
             <th>Valor Unitário</th>
             <th>Qtd.</th>
-            <th></th>
+            <th>  </th>
           </tr>
         </thead>
         <tbody>
@@ -39,7 +39,6 @@
               <td><input type="number" name="qtd" value="1"></td>
               <td>
                 <span class="actions">
-
                   <input type="hidden" name="id" value={{this.id}}>
                   <button type="submit" data-toggle="tooltip" data-placement="top" data-title="Adicionar ao carrinho">
                     <i class="bi bi-plus-circle" id="add"></i>
@@ -62,11 +61,11 @@
     <div class="card-body">
       <h5 class="card-title">Carrinho</h5>
       <h6 class="card-subtitle mb-2 text-body-secondary">Subtotal: R$ {{vendaAtiva.valorTotal}}</h6>
-      <ul class="list-group list-group-flush">
+      {{!-- <ul class="list-group list-group-flush">
         {{#each vendaProduto}}
         <li class="list-group-item">{{produto.nomeProduto}} - {{quantidade}} - R$ {{valorUnitario}}</li>
         {{/each}}
-      </ul>
+      </ul> --}}
       <a href="/venda/finalizar" class="btn btn-success">Finalizar Venda</a>
       <a href="/venda/cancelar" class="btn btn-danger">Cancelar</a>
     </div>
