@@ -6,13 +6,10 @@ async function getVendaAtiva(req, res, next) {
       where: {
           status: true
       },
-      //adicionar aqui vendaProduto {{tem que fazer o relacionamento superManytoMany}}
   })
-    
+     
     req.vendaAtiva = vendaAtiva;
-    res.locals.vendaAtiva = vendaAtiva
     next();
-
 }
 
 module.exports = getVendaAtiva;

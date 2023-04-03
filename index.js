@@ -1,7 +1,6 @@
 
 const express = require("express");
 const exphbs = require("express-handlebars");
-const getVendaAtiva = require('./middlewares/vendaAtiva');
 // const session = require("express-session");
 // const FileStore = require("session-file-store")(session);
 // const flash = require("express-flash");
@@ -24,7 +23,7 @@ app.use(express.json());
 
 app.use(express.static('public'))
 
-app.use(getVendaAtiva)
+
 
 
 // Importa os Models para a criação das tabelas

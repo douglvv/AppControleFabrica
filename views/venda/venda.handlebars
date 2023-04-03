@@ -16,7 +16,7 @@
     </form>
 
     <!-- Products list -->
-    {{#if produtos.length}}
+    {{#if produtos}}
     <div class="card mb-3" style="width: 50%">
       <div class="card-header">Produtos encontrados</div>
       <table id="tabela" class="table table-striped" style="width:100%">
@@ -26,7 +26,7 @@
             <th>Nome</th>
             <th>Valor Unitário</th>
             <th>Qtd.</th>
-            <th>  </th>
+            <th> </th>
           </tr>
         </thead>
         <tbody>
@@ -36,7 +36,17 @@
               <td>{{this.id}}</td>
               <td>{{this.nomeProduto}}</td>
               <td>{{this.valorUnitario}}</td>
-              <td><input type="number" name="qtd" value="1"></td>
+              {{!-- <td><input type="number" name="qtd" value="1"></td> --}}
+              <td>
+                <select class="form-select" aria-label="qtd" name="qtd" required>
+                  <option selected value="1">1</option>
+                  <script>
+                    for (let i = 2; i <= 15; i++) {
+                      document.write(`<option value="${i}">${i}</option>`);
+                    }
+                  </script>
+                </select>
+              </td>
               <td>
                 <span class="actions">
                   <input type="hidden" name="id" value={{this.id}}>
@@ -57,17 +67,48 @@
     </div>
     {{/if}}
   </div>
-  <div class="card" style="width: 18rem;">
+    {{!-- {{#if produtosVendaAtiva}} --}}
+  <div class="card" style="width: 50%;">
     <div class="card-body">
       <h5 class="card-title">Carrinho</h5>
       <h6 class="card-subtitle mb-2 text-body-secondary">Subtotal: R$ {{vendaAtiva.valorTotal}}</h6>
-      {{!-- <ul class="list-group list-group-flush">
-        {{#each vendaProduto}}
-        <li class="list-group-item">{{produto.nomeProduto}} - {{quantidade}} - R$ {{valorUnitario}}</li>
-        {{/each}}
-      </ul> --}}
-      <a href="/venda/finalizar" class="btn btn-success">Finalizar Venda</a>
-      <a href="/venda/cancelar" class="btn btn-danger">Cancelar</a>
+      <ul class="list-group list-group-flush">
+        <table id="tabela" class="table table-borderless" style="width:100%">
+          <thead>
+            <tr>
+              <th>Produto</th>
+              <th>Qtd.</th>
+              <th>Valor Unitário</th>
+              <th> </th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each produtosVendaAtiva}}
+            <form action="/venda/removerProduto" method="POST">
+              <tr>
+                <td>{{this.Produto.nomeProduto}}</td>
+                <td>{{this.qtd}}</td>
+                <td>{{this.valor}}</td>
+                <td>
+                  <span class="actions">
+                    <input type="hidden" name="ProdutoId" value={{this.Produto.id}}>
+                    <button type="submit" data-toggle="tooltip" data-placement="top" data-title="Remover Produto">
+                      <i class="bi bi-x-circle" id="remove"></i>
+                    </button>
+            </form>
+            {{/each}}
+        </table>
+        <div class="row">          
+          <form action="/venda/finalizar" class="col" method="POST">
+            <input type="hidden" name="id" value={{vendaAtiva.id}}>
+            <button type="submit" class="btn btn-success p-3 m-3">Finalizar Venda</button>            
+          </form>
+          <form action="/venda/remover" class="col" method="POST">
+            <input type="hidden" name="id" value={{vendaAtiva.id}}>
+            <button type="submit" class="btn btn-danger p-3 m-3">Cancelar</button>            
+          </form>
+        </div>
+      {{!-- {{/if}} --}}
     </div>
   </div>
 </div>
@@ -75,18 +116,5 @@
 
 <!-- Script to handle the add to sale button click event -->
 <script>
-  function aumentarQtd(id) {
-    // Get the elemento by ID
-    let elemento = document.getElementById(id);
 
-    // Check if the elemento exists
-    if (elemento) {
-      // Get the current value and increment it
-      let currentValue = 1;
-      let newValue = currentValue + 1;
-
-      // Set the new value on the elemento
-      elemento.value = newValue;
-    }
-  }
 </script>

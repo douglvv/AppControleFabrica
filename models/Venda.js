@@ -27,4 +27,7 @@ Cliente.hasMany(Venda)
 Venda.belongsToMany(Produto, { through: VendaProduto });
 Produto.belongsToMany(Venda, { through: VendaProduto });
 
+VendaProduto.belongsTo(Produto);
+VendaProduto.belongsTo(Venda);
+
 module.exports = Venda;

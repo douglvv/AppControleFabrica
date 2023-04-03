@@ -3,6 +3,7 @@ const Cliente = require('../models/Cliente.js')
 const Produto = require('../models/Produto.js')
 const Venda = require('../models/Venda.js')
 const VendaProduto = require('../models/VendaProduto.js')
+const getProdutosVendaAtiva = require("../middlewares/produtosVendaAtiva")
 
 module.exports = class VendaController {
     static mostrarVendas(req, res) {
@@ -77,12 +78,14 @@ module.exports = class VendaController {
         }).then((data) => {
             const produtos = data.map((result) => result.get({ plain: true }))
             const vendaAtiva = {
-            status: req.vendaAtiva.status,
-            data: req.vendaAtiva.data,
-            valorTotal: req.vendaAtiva.valorTotal,
-            ClienteId: req.vendaAtiva.ClienteId
-        };
-            res.render('venda/venda', { produtos, vendaAtiva: vendaAtiva});
+                status: req.vendaAtiva.status,
+                data: req.vendaAtiva.data,
+                valorTotal: req.vendaAtiva.valorTotal,
+                ClienteId: req.vendaAtiva.ClienteId
+            }
+            let produtosVendaAtiva = req.produtosVendaAtiva
+            // console.log(produtosVendaAtiva)
+            res.render('venda/venda', { produtos, vendaAtiva: vendaAtiva, produtosVendaAtiva: produtosVendaAtiva });
         })
             .catch((err) => console.log(err))
     }
@@ -97,21 +100,22 @@ module.exports = class VendaController {
             return
         }
 
-        // Criar um middleware para executar na route antes do add produto para sempre ter o objeto de venda ativa
         // Encontra a venda ativa
         const vendaAtiva = req.vendaAtiva
 
         // Verifica se o produto já está na venda ativa
         const vendaProdutoExistente = await VendaProduto.findOne({
             where: {
-                VendaId: vendaAtiva.id ,
+                VendaId: vendaAtiva.id,
                 ProdutoId: produto.id
             }
         })
 
         if (vendaProdutoExistente) {
             // O produto já está na venda, incrementa a quantidade
-            vendaProdutoExistente.qtd += req.body.qtd;
+            let qtd = parseFloat(vendaProdutoExistente.qtd)
+            qtd += parseFloat(req.body.qtd)
+            vendaProdutoExistente.qtd = qtd
             await vendaProdutoExistente.save();
         } else {
             // Adiciona o produto a venda
@@ -139,10 +143,77 @@ module.exports = class VendaController {
         await Venda.update(vendaAtualizada, { where: { status: true } })
         vendaAtiva.save()
 
-        // vendaproduto findall where idvenda = vendativa.id
-        res.render('venda/venda',{vendaAtiva: vendaAtualizada})
-        console.log(vendaAtiva)
-        
+        let produtosVendaAtiva = req.produtosVendaAtiva
+
+        res.render('venda/venda', { vendaAtiva: vendaAtualizada, produtosVendaAtiva: produtosVendaAtiva })
+
+    }
+
+    // static async removerProduto(req, res){
+    //     let VendaId = req.vendaAtiva.id
+    //     const ProdutoId = req.body.id
+    //     await VendaProduto.destroy({where: { VendaId: VendaId, ProdutoId: ProdutoId }}).then(() => {
+    //         res.render('venda/venda')
+    //     })
+    //     .catch((err) => console.log(err))
+
+    // }
+
+    static async removerProduto(req, res) {
+        try {
+            const vendaId = req.vendaAtiva.id;
+            const produtoId = req.body.ProdutoId;
+            console.log(produtoId)
+
+            await VendaProduto.destroy({
+                where: {
+                    VendaId: vendaId,
+                    ProdutoId: produtoId
+                }
+            })
+
+            // Atualiza o valor total da venda
+            let vendaAtualizada = req.vendaAtiva;
+            const produtoRemovido = await Produto.findByPk(produtoId);
+            const valorRemovido = parseFloat(produtoRemovido.valorUnitario * req.body.qtd);
+            console.log('valor Removido = '+ valorRemovido)
+
+            // Atualiza o valor total da venda
+            let valorTotal = parseFloat(req.vendaAtiva.valorTotal)
+            valorTotal = parseFloat(req.vendaAtiva.valorTotal) - valorRemovido;
+
+            vendaAtualizada = {
+                id: vendaAtiva.id,
+                status: vendaAtiva.status,
+                data: vendaAtiva.data,
+                valorTotal: valorTotal
+            };
+
+            await Venda.update(vendaAtualizada, { where: { status: true } })
+            vendaAtiva.save()
+
+            vendaAtualizada = await Venda.findByPk(vendaAtualizada.id);
+
+            let produtosVendaAtiva = await VendaProduto.findAll({
+                where: { VendaId: vendaId },
+                include: [Produto]
+            });
+
+            res.render('venda/venda', { vendaAtiva: vendaAtualizada, produtosVendaAtiva: produtosVendaAtiva });
+        } catch (err) {
+            res.status(500).send(err.message);
+        }
+    }
+
+
+    static finalizarVenda(req, res) {
+        vendaAtiva = {
+            status: false
+        }
+        Venda.update(vendaAtiva, { where: { status: true } }).then(() => {
+            res.redirect('/venda')
+        })
+            .catch((err) => console.log(err))
     }
 
     static editarVenda(req, res) {
@@ -164,7 +235,7 @@ module.exports = class VendaController {
         }
         Venda.update(venda, { where: { id: id } })
             .then(() => {
-                res.redirect('/venda')
+                res.redirect('/venda/')
             })
             .catch((err) => console.log(err))
     }
@@ -176,14 +247,5 @@ module.exports = class VendaController {
                 res.redirect('/venda')
             })
             .catch((err) => console.log(err))
-
     }
-
-    async buscarProduto(req, res) {
-        let produto = await Produto.find({
-            nomeProduto: req.body.nomeProduto
-        });
-        res.render('venda/criar', { produto })
-    }
-
 }
