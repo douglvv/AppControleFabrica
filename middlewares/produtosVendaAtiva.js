@@ -4,10 +4,11 @@ const Produto = require('../models/Produto');
 async function getProdutosVendaAtiva(req, res, next) {
     vendaAtiva = req.vendaAtiva
 
+    // Se existir uma venda ativa mapeia os produtos, caso não apenas continua
     if (vendaAtiva) {
         await VendaProduto.findAll({
             where: {
-                VendaId: vendaAtiva.id// replace with the ID of the venda you want to map
+                VendaId: vendaAtiva.id
             },
             include: [{
                 model: Produto

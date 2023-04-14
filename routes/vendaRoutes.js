@@ -4,16 +4,24 @@ const VendaController = require("../controllers/VendaController");
 const getVendaAtiva = require("../middlewares/vendaAtiva")
 const getProdutosVendaAtiva = require("../middlewares/produtosVendaAtiva")
 
+
 router.get("/", VendaController.mostrarVendas);
+
+// Rotas criação da venda
 router.get("/criar", VendaController.criarVenda);
-router.post("/criarPost", VendaController.criarVendaPost);
+router.post("/criar/detalhes", VendaController.criarVendaPost);
+router.get("/criar/detalhes",getVendaAtiva, getProdutosVendaAtiva, VendaController.mostrarDetalhesVendaAtiva)
+router.get('/criar/detalhes/procurar',getVendaAtiva, getProdutosVendaAtiva, VendaController.procurarProduto);
+router.post('/criar/detalhes/add/:id',getVendaAtiva, VendaController.addProduto);
+router.post('/criar/detalhes/remover/:produtoId',getVendaAtiva, VendaController.removerProduto)
+router.post('/finalizar', VendaController.finalizarVenda)
+router.post("/cancelar", VendaController.cancelarVenda);
+
+
+
 router.get("/editar/:id", VendaController.editarVenda);
 router.post("/editarPost", VendaController.editarVendaPost);
 router.post("/remover", VendaController.removerVenda);
-router.post('/procurarProduto',getVendaAtiva, getProdutosVendaAtiva, VendaController.procurarProduto);
-router.post('/addProduto',getVendaAtiva, getProdutosVendaAtiva, VendaController.addProduto);
-router.post('/finalizar', VendaController.finalizarVenda)
-router.post('/removerProduto',getVendaAtiva, VendaController.removerProduto)
 
 
 module.exports = router;

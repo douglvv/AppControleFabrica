@@ -1,13 +1,11 @@
-<!-- search_produtos.handlebars -->
 <div class="container">
   <div>
-    <!-- Search form -->
-    <form class="form-inline mb-3" style="width: 50%;" action="/venda/procurarProduto" method="POST">
-      <input type="hidden" name="idVenda" value="{{venda.id}}">
+    {{!-- Search form --}}
+    <form class="form-inline mb-3" style="width: 50%;" id="formProcurarProduto" action="/venda/criar/detalhes/procurar" method="GET">
       <div class="form-group row">
-        <label for="nomeProduto">Pesquisar Produto</label>
+        <label for="produto">Pesquisar Produto</label>
         <div class="col">
-          <input type="text" class="form-control mb-2" name="nomeProduto" placeholder="Digite o nome do Produto">
+          <input type="text" class="form-control mb-2" name="produto" placeholder="Digite o nome do Produto">
         </div>
         <div class="col">
           <button class="btn btn-primary col" type="submit">Procurar</button>
@@ -15,7 +13,7 @@
       </div>
     </form>
 
-    <!-- Products list -->
+    {{!-- Lista produtos --}}
     {{#if produtos}}
     <div class="card mb-3" style="width: 50%">
       <div class="card-header">Produtos encontrados</div>
@@ -31,12 +29,11 @@
         </thead>
         <tbody>
           {{#each produtos}}
-          <form action="/venda/addProduto" method="POST">
+          <form id="formAddProduto" action="/venda/criar/detalhes/add/{{this.id}}" method="POST">
             <tr>
               <td>{{this.id}}</td>
               <td>{{this.nomeProduto}}</td>
-              <td>{{this.valorUnitario}}</td>
-              {{!-- <td><input type="number" name="qtd" value="1"></td> --}}
+              <td>{{this.valorUnitario}}</td>              
               <td>
                 <select class="form-select" aria-label="qtd" name="qtd" required>
                   <option selected value="1">1</option>
@@ -67,10 +64,11 @@
     </div>
     {{/if}}
   </div>
-    {{!-- {{#if produtosVendaAtiva}} --}}
+
+  {{!-- Carrinho --}}
   <div class="card" style="width: 50%;">
     <div class="card-body">
-      <h5 class="card-title">Carrinho</h5>
+      <h5 class="card-title text-primary">Carrinho</h5>
       <h6 class="card-subtitle mb-2 text-body-secondary">Subtotal: R$ {{vendaAtiva.valorTotal}}</h6>
       <ul class="list-group list-group-flush">
         <table id="tabela" class="table table-borderless" style="width:100%">
@@ -84,7 +82,7 @@
           </thead>
           <tbody>
             {{#each produtosVendaAtiva}}
-            <form action="/venda/removerProduto" method="POST">
+            <form action="/venda/criar/detalhes/remover/{{this.Produto.id}}" method="POST">
               <tr>
                 <td>{{this.Produto.nomeProduto}}</td>
                 <td>{{this.qtd}}</td>
@@ -92,29 +90,23 @@
                 <td>
                   <span class="actions">
                     <input type="hidden" name="ProdutoId" value={{this.Produto.id}}>
+                    <input type="hidden" name="qtd" value="{{this.qtd}}">
                     <button type="submit" data-toggle="tooltip" data-placement="top" data-title="Remover Produto">
                       <i class="bi bi-x-circle" id="remove"></i>
                     </button>
             </form>
             {{/each}}
         </table>
-        <div class="row">          
+        <div class="row">
           <form action="/venda/finalizar" class="col" method="POST">
             <input type="hidden" name="id" value={{vendaAtiva.id}}>
-            <button type="submit" class="btn btn-success p-3 m-3">Finalizar Venda</button>            
+            <button type="submit" class="btn btn-success p-3 m-3">Finalizar Venda</button>
           </form>
-          <form action="/venda/remover" class="col" method="POST">
+          <form action="/venda/cancelar" class="col" method="POST">
             <input type="hidden" name="id" value={{vendaAtiva.id}}>
-            <button type="submit" class="btn btn-danger p-3 m-3">Cancelar</button>            
+            <button type="submit" class="btn btn-danger p-3 m-3">Cancelar</button>
           </form>
         </div>
-      {{!-- {{/if}} --}}
     </div>
   </div>
 </div>
-
-
-<!-- Script to handle the add to sale button click event -->
-<script>
-
-</script>
