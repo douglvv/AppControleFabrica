@@ -49,6 +49,34 @@ module.exports = class VendaController {
             .catch((err) => console.log(err))
     }
 
+    // static async procurarCliente(req, res) {
+    //     let cliente = '';
+    //     if (req.query.cliente) {
+    //         cliente = req.query.cliente.trim();
+    //     }
+    //     await Cliente.findAll({
+    //         where: {
+    //             [Op.or]: [
+    //               {
+    //                 nome: {
+    //                   [Op.like]: `%${cliente}%`
+    //                 }
+    //               },
+    //               {
+    //                 cpfCnpj: {
+    //                   [Op.like]: `%${cliente}%`
+    //                 }
+    //               }
+    //             ]
+    //           }
+    //     }).then((data) => {
+    //         const clientes = data.map((result) => result.get({ plain: true }))
+    //         const data_atual = new Date().toISOString().slice(0, 10)
+    //         res.render('venda/criar', { clientes, data_atual });
+    //     })
+    //         .catch((err) => console.log(err))
+    // }
+
     static criarVendaPost(req, res) {
         const venda = {
             status: true,
@@ -58,7 +86,7 @@ module.exports = class VendaController {
         }
         Venda.create(venda)
             .then(() => {
-                res.render('venda/venda', { vendaAtiva: venda })
+                res.redirect(303, "/venda/criar/detalhes")
             })
             .catch((err) => console.log(err))
     }
@@ -213,9 +241,25 @@ module.exports = class VendaController {
     }
 
     static finalizarVenda(req, res) {
-        vendaAtiva = {
-            status: false
+        // Encontra a venda ativa e o desconto 
+        vendaAtiva = req.vendaAtiva.toJSON()
+        const desconto = parseFloat(req.body.desconto)
+
+        // Se houver desconto, aplica na venda
+        if(desconto){
+            let valorFinal = parseFloat(vendaAtiva.valorTotal - desconto)
+            console.log("AAAAAAAAAAAAA "+valorFinal)
+            vendaAtiva = {
+                status: false,
+                valorTotal: valorFinal
+            }
+        } else { // Caso não haja, finaliza a venda
+            vendaAtiva = {
+                status: false
+            }
         }
+        
+        // Altera o status da venda para false
         Venda.update(vendaAtiva, { where: { status: true } }).then(() => {
             res.redirect('/venda')
         })
@@ -262,4 +306,4 @@ module.exports = class VendaController {
             })
             .catch((err) => console.log(err))
     }
-}
+} // Fim

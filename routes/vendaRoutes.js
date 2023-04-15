@@ -9,12 +9,13 @@ router.get("/", VendaController.mostrarVendas);
 
 // Rotas criação da venda
 router.get("/criar", VendaController.criarVenda);
+// router.get("/criar/procurarCliente", VendaController.procurarCliente)
 router.post("/criar/detalhes", VendaController.criarVendaPost);
 router.get("/criar/detalhes",getVendaAtiva, getProdutosVendaAtiva, VendaController.mostrarDetalhesVendaAtiva)
 router.get('/criar/detalhes/procurar',getVendaAtiva, getProdutosVendaAtiva, VendaController.procurarProduto);
 router.post('/criar/detalhes/add/:id',getVendaAtiva, VendaController.addProduto);
 router.post('/criar/detalhes/remover/:produtoId',getVendaAtiva, VendaController.removerProduto)
-router.post('/finalizar', VendaController.finalizarVenda)
+router.post('/finalizar',getVendaAtiva, VendaController.finalizarVenda)
 router.post("/cancelar", VendaController.cancelarVenda);
 
 
