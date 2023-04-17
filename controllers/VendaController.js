@@ -160,7 +160,14 @@ module.exports = class VendaController {
             await VendaProduto.create(vendaProduto);
         }
 
-        // Atualiza o valor total da venda
+        // Atualiza a qtd de produtos em estoque
+        let qtdEstoque = parseInt(produto.qtd)
+        let qtdVenda = parseInt(req.body.qtd)
+        let qtdEstoqueAtualizada = qtdEstoque - qtdVenda
+        produto.qtd = qtdEstoqueAtualizada
+        produto.save()
+        
+
         let valorTotal = parseFloat(vendaAtiva.valorTotal)
         valorTotal += parseFloat(produto.valorUnitario * req.body.qtd)
 
@@ -205,7 +212,7 @@ module.exports = class VendaController {
 
             // Atualiza o valor total da venda
             let vendaAtualizada = req.vendaAtiva;
-            const produtoRemovido = await Produto.findByPk(produtoId);
+            let produtoRemovido = await Produto.findByPk(produtoId);
             const valorRemovido = parseFloat(produtoRemovido.valorUnitario * req.body.qtd);
             // console.log('valor Removido = ' + valorRemovido)
 
@@ -220,6 +227,13 @@ module.exports = class VendaController {
             };
 
             await Venda.update(vendaAtualizada, { where: { status: true } })
+
+            // Atualiza a qtd do produto em estoque            
+            let qtdEstoque = parseInt(produtoRemovido.qtd)
+            let qtdVenda = parseInt(req.body.qtd)
+            let qtdAtualizada = qtdEstoque + qtdVenda
+            produtoRemovido.qtd = qtdAtualizada
+            produtoRemovido.save()
 
             vendaAtualizada = await Venda.findByPk(vendaAtualizada.id);
 

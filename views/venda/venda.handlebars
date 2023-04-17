@@ -23,6 +23,7 @@
           <th>id</th>
           <th>Produto</th>
           <th>Valor Unitário</th>
+          <th>Und. em Estoque</th>
           <th>Qtd.</th>
           <th> </th>
         </tr>
@@ -32,8 +33,9 @@
         <form id="formAddProduto" action="/venda/criar/detalhes/add/{{this.id}}" method="POST">
           <tr>
             <td>{{this.id}}</td>
-            <td>{{this.nomeProduto}}</td>
+            <td>{{this.nomeProduto}}</td>            
             <td>{{this.valorUnitario}}</td>
+            <td>{{this.qtd}}</td>
             <td>
               <select class="form-select" aria-label="qtd" name="qtd" required>
                 <option selected value="1">1</option>
