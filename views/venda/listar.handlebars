@@ -32,7 +32,7 @@
                 <td>{{this.Cliente.nome}}</td>
                 <td>      
                     <span class="actions">
-                        <a href="/venda/editar/{{this.id}}" data-title="Editar"><i class="bi bi-pencil-fill" id="lapis"></i></a>
+                        <a href="/venda/editar/{{this.id}}" data-title="Detalhes"><i class="bi bi-info-circle-fill" id="lapis"></i></a>
                         <form action="/venda/remover" method="POST">
                             <input type="hidden" name="id" value={{this.id}}>
                             <button type="submit" data-toggle="tooltip" data-placement="top" data-title="Excluir">

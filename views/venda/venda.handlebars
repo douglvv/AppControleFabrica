@@ -65,10 +65,59 @@
   {{!-- Carrinho --}}
   <div class="card col-6">
     <div class="card-body">
-      <h5 class="card-title text-success"><strong>Carrinho</strong></h5>
+      <h5 class="card-title text-success"><i class="bi bi-cart4"><strong> Carrinho</strong></i></h5>
       <h6 class="card-subtitle mb-2 text-body-secondary">Subtotal: R$ {{vendaAtiva.valorTotal}}</h6>
-      <ul class="list-group list-group-flush">
-        <table id="tabela" class="table table-borderless">
+      <table id="tabela" class="table table-borderless">
+        <thead>
+          <tr>
+            <th>Produto</th>
+            <th>Qtd.</th>
+            <th>Valor Unitário</th>
+            <th> </th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each produtosVendaAtiva}}
+          <form action="/venda/criar/detalhes/remover/{{this.Produto.id}}" method="POST">
+            <tr>
+              <td>{{this.Produto.nomeProduto}}</td>
+              <td>{{this.qtd}}</td>
+              <td>{{this.valor}}</td>
+              <td>
+                <span class="actions">
+                  <input type="hidden" name="ProdutoId" value={{this.Produto.id}}>
+                  <input type="hidden" name="qtd" value="{{this.qtd}}">
+                  <button type="submit" data-toggle="tooltip" data-placement="top" data-title="Remover Produto">
+                    <i class="f2-4 bi bi-x-circle" id="remove"></i>
+                  </button>
+          </form>
+          {{/each}}
+      </table>
+      <div class="container d-flex align-items-center">
+        <label for="inputDesconto" class="m-2">Desconto: R$</label>
+        <input type="number" class="m-2" name="inputDesconto" id="inputDesconto" value="0.00" step="0.01">
+        <button type="button" class="btn btn-success m-1" data-bs-toggle="modal" data-bs-target="#modal" id="botaoFinalizar"
+          onclick="atualizarModalFinalizar()" title="Finalizar Venda">
+          Finalizar Venda
+        </button>
+        <button type="button" class="btn btn-danger m-1" data-bs-toggle="modal" data-bs-target="#modalCancelar" id="botaoCancelar">
+          Cancelar venda
+        </button>        
+      </div>
+    </div>
+  </div>
+</div>
+
+{{!-- Modal Finalizar --}}
+<div class="modal fade" id="modal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="modalLabel">Confirmação</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <table class="table table-borderless">
           <thead>
             <tr>
               <th>Produto</th>
@@ -79,32 +128,63 @@
           </thead>
           <tbody>
             {{#each produtosVendaAtiva}}
-            <form action="/venda/criar/detalhes/remover/{{this.Produto.id}}" method="POST">
-              <tr>
-                <td>{{this.Produto.nomeProduto}}</td>
-                <td>{{this.qtd}}</td>
-                <td>{{this.valor}}</td>
-                <td>
-                  <span class="actions">
-                    <input type="hidden" name="ProdutoId" value={{this.Produto.id}}>
-                    <input type="hidden" name="qtd" value="{{this.qtd}}">
-                    <button type="submit" data-toggle="tooltip" data-placement="top" data-title="Remover Produto">
-                      <i class="f2-4 bi bi-x-circle" id="remove"></i>
-                    </button>
-            </form>
-            {{/each}}
+            <tr>
+              <td>{{this.Produto.nomeProduto}}</td>
+              <td>{{this.qtd}}</td>
+              <td>{{this.valor}}</td>
+              <td>
+                {{/each}}
         </table>
-        <span class="row">
-          <form action="/venda/finalizar" class="col d-flex justify-content-center align-items-center" method="POST">
-            <label for="desconto">Desconto: R$</label>
-            <input type="number" name="desconto" value="0.00" step="0.01">
-            <button type="submit" class="btn btn-success">Finalizar Venda</button>
-          </form>
-          <form action="/venda/cancelar" class="col d-flex justify-content-center align-items-center" method="POST">
-            <input type="hidden" name="id" value={{vendaAtiva.id}}>
-            <button type="submit" class="btn btn-danger">Cancelar Venda</button>
-          </form>
-        </span>
+        <div id="valoresVenda" class="">
+          <p class="m-1">SUBTOTAL: R$ {{vendaAtiva.valorTotal}}</p>
+          <div id="valorDesconto"></div>
+          <hr>
+          <div id="valorFinal"></div>
+        </div>
+      </div>
+      <div class="modal-footer d-flex justify-content-center">
+        <form action="/venda/finalizar" method="POST" id="formFinalizar">
+          <input type="hidden" name="desconto" id="desconto" value="" step="0.01">
+          <button type="submit" class="btn btn-success">Finalizar Venda</button>
+        </form>
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Voltar</button>
+      </div>
     </div>
   </div>
 </div>
+
+{{!-- Modal Cancelar --}}
+<div class="modal fade" id="modalCancelar" tabindex="-1" aria-labelledby="modalCancelarLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="modalCancelarLabel">Confirmação</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body text-center">
+        <h6 class="text-danger">Deseja mesmo cancelar esta venda?</h6>
+      </div>
+      <div class="modal-footer d-flex justify-content-center">   
+        <form action="/venda/cancelar" method="POST">
+          <button type="submit" class="btn btn-primary">Cancelar Venda</button>          
+        </form>        
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Voltar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function atualizarModalFinalizar() {
+    // Exibe o valor do inputDesconto e valor final da venda no modal
+    let inputDesconto = parseFloat(document.getElementById("inputDesconto").value)
+    document.getElementById("valorDesconto").innerHTML = `<p class="m-1 text-danger ">DESCONTO: - R$ ${inputDesconto.toFixed(2)}</p>`
+    let valorFinal = parseFloat("{{vendaAtiva.valorTotal}}") - inputDesconto
+    document.getElementById("valorFinal").innerHTML = `<p class="m-1 "><strong class="fs-6">VALOR FINAL: R$ ${valorFinal.toFixed(2)}</strong></p>`
+    // ---------------------------------------------------------
+
+    // Passa o valor do desconto para o form
+
+    document.getElementById("desconto").value = inputDesconto
+  }
+</script>
