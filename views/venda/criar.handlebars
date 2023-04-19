@@ -16,9 +16,9 @@
                             <label for="data" class="form-label">Data</label>
                             <input type="date" class="form-control" name="data" value="{{data_atual}}" required>
                         </div>
-                        <div class="col-md-9 mb-3">
+                        <div class="col-md-7 mb-3">
                             <label for="cliente" class="form-label">Cliente</label>
-                            <select class="form-select" aria-label="cliente" name="cliente" required>
+                            <select class="form-select" aria-label="cliente" name="cliente">
                                 <option selected>Selecione o cliente</option>
                                 {{#each clientes}}
                                 <option value="{{this.id}}">{{this.nome}} | CPF / CNPJ: {{this.cpfCnpj}}</option>

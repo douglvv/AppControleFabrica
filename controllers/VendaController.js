@@ -25,8 +25,7 @@ module.exports = class VendaController {
                     qtd = false
                 }
 
-                const resultado = data.map((result) => result.get({ plain: true }))
-
+                const resultado = data.map((result) => result.get({ plain: true }))                
                 res.render('venda/listar', { resultado, qtd })
             })
             .catch((err) => console.log(err))
@@ -96,7 +95,7 @@ module.exports = class VendaController {
         let vendaAtiva = req.vendaAtiva.toJSON()
         let produtos = req.produtosVendaAtiva
 
-        res.render("venda/venda", {vendaAtiva: vendaAtiva, produtosVendaAtiva: produtos})
+        res.render("venda/venda", { vendaAtiva: vendaAtiva, produtosVendaAtiva: produtos })
 
     }
 
@@ -166,7 +165,7 @@ module.exports = class VendaController {
         let qtdEstoqueAtualizada = qtdEstoque - qtdVenda
         produto.qtd = qtdEstoqueAtualizada
         produto.save()
-        
+
 
         let valorTotal = parseFloat(vendaAtiva.valorTotal)
         valorTotal += parseFloat(produto.valorUnitario * req.body.qtd)
@@ -257,12 +256,13 @@ module.exports = class VendaController {
     static finalizarVenda(req, res) {
         // Encontra a venda ativa e o desconto 
         vendaAtiva = req.vendaAtiva.toJSON()
+        const id = req.vendaAtiva.id // id da venda
         const desconto = parseFloat(req.body.desconto)
 
         // Se houver desconto, aplica na venda
-        if(desconto){
+        if (desconto) {
             let valorFinal = parseFloat(vendaAtiva.valorTotal - desconto)
-            console.log("AAAAAAAAAAAAA "+valorFinal)
+            console.log("AAAAAAAAAAAAA " + valorFinal)
             vendaAtiva = {
                 status: false,
                 valorTotal: valorFinal
@@ -272,10 +272,10 @@ module.exports = class VendaController {
                 status: false
             }
         }
-        
+
         // Altera o status da venda para false
         Venda.update(vendaAtiva, { where: { status: true } }).then(() => {
-            res.redirect('/venda')
+            res.redirect('/venda/visualizar/'+id)
         })
             .catch((err) => console.log(err))
     }
@@ -319,5 +319,53 @@ module.exports = class VendaController {
                 res.redirect('/venda')
             })
             .catch((err) => console.log(err))
+    }
+
+    static async mostrarDetalhes(req, res) {
+        try {
+            // Encontra a venda
+            const id = req.params.id;
+            let venda = await Venda.findOne({
+                where: {
+                    id: id,
+                },
+                include: [{
+                    model: Cliente
+                }]
+            });
+
+            let dadosVenda = {
+                id: venda.id,
+                status: venda.status,
+                data: venda.data,
+                valorTotal: venda.valorTotal,
+                ClienteId: venda.ClienteId,
+            }
+            
+            const dadosCliente = {
+                id: venda.Cliente.id,
+                nome: venda.Cliente.nome,
+                cpfCnpj: venda.Cliente.cpfCnpj,
+                telefone: venda.Cliente.telefone
+            }
+
+            const data = await VendaProduto.findAll({
+                where: {
+                    VendaId: venda.id
+                },
+                include: [{
+                    model: Produto
+                }]
+            })
+
+            const produtos = data.map((result) => result.get({ plain: true }))
+
+
+            res.render("venda/visualizar", { venda: dadosVenda, cliente: dadosCliente, produtos: produtos });
+
+        } catch (error) {
+            console.log(error)
+            res.redirect('/')
+        }
     }
 } // Fim
