@@ -48,40 +48,41 @@ module.exports = class VendaController {
             .catch((err) => console.log(err))
     }
 
-    // static async procurarCliente(req, res) {
-    //     let cliente = '';
-    //     if (req.query.cliente) {
-    //         cliente = req.query.cliente.trim();
-    //     }
-    //     await Cliente.findAll({
-    //         where: {
-    //             [Op.or]: [
-    //               {
-    //                 nome: {
-    //                   [Op.like]: `%${cliente}%`
-    //                 }
-    //               },
-    //               {
-    //                 cpfCnpj: {
-    //                   [Op.like]: `%${cliente}%`
-    //                 }
-    //               }
-    //             ]
-    //           }
-    //     }).then((data) => {
-    //         const clientes = data.map((result) => result.get({ plain: true }))
-    //         const data_atual = new Date().toISOString().slice(0, 10)
-    //         res.render('venda/criar', { clientes, data_atual });
-    //     })
-    //         .catch((err) => console.log(err))
-    // }
+    static async procurarCliente(req, res) {
+        let cliente = '';
+        if (req.query.cliente) {
+            cliente = req.query.cliente.trim();
+        }
+        await Cliente.findAll({
+            where: {
+                [Op.or]: [
+                  {
+                    nome: {
+                      [Op.like]: `%${cliente}%`
+                    }
+                  },
+                  {
+                    cpfCnpj: {
+                      [Op.like]: `%${cliente}%`
+                    }
+                  }
+                ]
+              }
+        }).then((data) => {
+            const clientes = data.map((result) => result.get({ plain: true }))
+            const data_atual = new Date().toISOString().slice(0, 10)
+            res.render('venda/criar', { clientes, data_atual });
+        })
+            .catch((err) => console.log(err))
+    }
 
     static criarVendaPost(req, res) {
         const venda = {
             status: true,
             data: req.body.data,
             valorTotal: 0.00,
-            ClienteId: req.body.cliente
+            ClienteId: req.body.cliente,
+            formaPagamento: ""
         }
         Venda.create(venda)
             .then(() => {
@@ -93,6 +94,7 @@ module.exports = class VendaController {
     static async mostrarDetalhesVendaAtiva(req, res) {
         // Encontra a venda ativa e os produtos da venda
         let vendaAtiva = req.vendaAtiva.toJSON()
+        console.log(vendaAtiva)
         let produtos = req.produtosVendaAtiva
 
         res.render("venda/venda", { vendaAtiva: vendaAtiva, produtosVendaAtiva: produtos })
@@ -106,9 +108,10 @@ module.exports = class VendaController {
         }
         await Produto.findAll({
             where: {
-                nomeProduto: {
-                    [Op.like]: `%${produto}%` // case-insensitive search
-                },
+                [Op.or]: [
+                    { nomeProduto: { [Op.like]: `%${produto}%` } },
+                    { id: { [Op.like]: `%${produto}%` } }
+                ]
             }
         }).then((data) => {
             const produtos = data.map((result) => result.get({ plain: true }))
@@ -254,22 +257,24 @@ module.exports = class VendaController {
     }
 
     static finalizarVenda(req, res) {
-        // Encontra a venda ativa e o desconto 
+        // Encontra a venda ativa ,desconto  e forma de pagamento
         vendaAtiva = req.vendaAtiva.toJSON()
         const id = req.vendaAtiva.id // id da venda
         const desconto = parseFloat(req.body.desconto)
+        const formaPagamento = req.body.formaPagamento
 
         // Se houver desconto, aplica na venda
         if (desconto) {
             let valorFinal = parseFloat(vendaAtiva.valorTotal - desconto)
-            console.log("AAAAAAAAAAAAA " + valorFinal)
             vendaAtiva = {
                 status: false,
-                valorTotal: valorFinal
+                valorTotal: valorFinal,
+                formaPagamento: formaPagamento
             }
         } else { // Caso não haja, finaliza a venda
             vendaAtiva = {
-                status: false
+                status: false,
+                formaPagamento: formaPagamento
             }
         }
 
@@ -339,6 +344,7 @@ module.exports = class VendaController {
                 status: venda.status,
                 data: venda.data,
                 valorTotal: venda.valorTotal,
+                formaPagamento: venda.formaPagamento,
                 ClienteId: venda.ClienteId,
             }
             

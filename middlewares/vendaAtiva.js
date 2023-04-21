@@ -1,3 +1,4 @@
+const Cliente = require('../models/Cliente');
 const Venda = require('../models/Venda');
 
 async function getVendaAtiva(req, res, next) {
@@ -6,6 +7,9 @@ async function getVendaAtiva(req, res, next) {
       where: {
           status: true
       },
+      include: [{
+        model: Cliente
+      }]
   })
      
     req.vendaAtiva = vendaAtiva;

@@ -7,7 +7,7 @@
         <label for="produto">Pesquisar Produto</label>
         <div class="input-group">
           <input type="text" name="produto" id="search-query" class="form-control bg-body-secondary"
-            placeholder="Digite o nome do produto..." aria-describedby="button-addon2">
+            placeholder="Digite o nome ou id do produto..." aria-describedby="button-addon2">
           <button class="btn btn-outline-success bg-body-secondary" type="submit" id="button-addon2">
             <i class="bi bi-search"></i>
           </button>
@@ -33,7 +33,7 @@
         <form id="formAddProduto" action="/venda/criar/detalhes/add/{{this.id}}" method="POST">
           <tr>
             <td>{{this.id}}</td>
-            <td>{{this.nomeProduto}}</td>            
+            <td>{{this.nomeProduto}}</td>
             <td>{{this.valorUnitario}}</td>
             <td>{{this.qtd}}</td>
             <td>
@@ -95,16 +95,38 @@
           </form>
           {{/each}}
       </table>
-      <div class="container d-flex align-items-center">
-        <label for="inputDesconto" class="m-2">Desconto: R$</label>
-        <input type="number" class="m-2" name="inputDesconto" id="inputDesconto" value="0.00" step="0.01">
-        <button type="button" class="btn btn-success m-1" data-bs-toggle="modal" data-bs-target="#modal" id="botaoFinalizar"
-          onclick="atualizarModalFinalizar()" title="Finalizar Venda">
+
+      {{!-- Forma Pagamento / Desconto --}}
+      <div class="row">
+        <div class="col">
+          <label for="inputFormaPagamento" class="m-2">Forma de Pagamento</label>
+          <select class="form-select mb-3" aria-label="inputFormaPagamento" name="inputFormaPagamento"
+            id="inputFormaPagamento">
+            <option value="Dinheiro" selected>Dinheiro</option>
+            <option value="Pix">Pix</option>
+            <option value="Cartão Crédito">Cartão Crédito</option>
+            <option value="Cartão Débito">Cartão Débito</option>
+            <option value="Boleto">Boleto</option>
+            <option value="Depósito Bancário">Depósito Bancário</option>
+          </select>
+        </div>
+        <div class="col">
+          <label for="inputDesconto" class="m-2">Desconto: R$</label>
+          <input type="number" class="mb-3 form-control" name="inputDesconto" id="inputDesconto" value="0.00"
+            step="0.01">
+        </div>
+      </div>
+
+      {{!-- Finalizar / Cancelar --}}
+      <div class="container d-flex justify-content-center align-items-center">
+        <button type="button" class="btn btn-success m-1" data-bs-toggle="modal" data-bs-target="#modal"
+          id="botaoFinalizar" onclick="atualizarModalFinalizar()" title="Finalizar Venda">
           Finalizar Venda
         </button>
-        <button type="button" class="btn btn-danger m-1" data-bs-toggle="modal" data-bs-target="#modalCancelar" id="botaoCancelar">
+        <button type="button" class="btn btn-danger m-1" data-bs-toggle="modal" data-bs-target="#modalCancelar"
+          id="botaoCancelar">
           Cancelar venda
-        </button>        
+        </button>
       </div>
     </div>
   </div>
@@ -119,6 +141,27 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
+        {{!-- Venda --}}
+        <div class="row mb-4">
+          <div class="col-md-6">
+            <p class="m-1"><strong>VENDA</strong></p>
+            <p class="m-1">Nº {{vendaAtiva.id}}</p>
+            <div id="dadosPagamentoModal"></div>
+          </div>
+          <div class="col-md-6">
+            <p class="m-1"><strong>CLIENTE</strong></p>
+            <p class="m-1">NOME: {{vendaAtiva.Cliente.nome}}</p>
+            <p class="m-1">CPF/CNPJ: {{vendaAtiva.Cliente.cpfCnpj}}</p>
+          </div>
+
+          {{!-- Parte de usuários - À FAZER
+          <div class="col-md-4">
+            <p class="m-1">Vendedor</p>
+            <p></p>
+            <p></p>
+          </div> --}}
+        </div>
+        {{!-- Produtos --}}
         <table class="table table-borderless">
           <thead>
             <tr>
@@ -137,16 +180,22 @@
               <td>
                 {{/each}}
         </table>
-        <div id="valoresVenda" class="">
-          <p class="m-1">SUBTOTAL: R$ {{vendaAtiva.valorTotal}}</p>
-          <div id="valorDesconto"></div>
-          <hr>
-          <div id="valorFinal"></div>
+
+        {{!-- Venda --}}
+        <div class="row mb-4 justify-content-start">
+          <div class="col-md-6" id="valoresVenda">
+            <p class="m-1"><strong>VALORES</strong></p>
+            <p class="m-1">Subtotal: R$ {{vendaAtiva.valorTotal}}</p>
+            <div id="valorDesconto"></div>
+            <div id="valorFinal"></div>
+          </div>
         </div>
+
       </div>
       <div class="modal-footer d-flex justify-content-center">
         <form action="/venda/finalizar" method="POST" id="formFinalizar">
           <input type="hidden" name="desconto" id="desconto" value="" step="0.01">
+          <input type="hidden" name="formaPagamento" id="formaPagamento" value="">
           <button type="submit" class="btn btn-success">Finalizar Venda</button>
         </form>
         <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Voltar</button>
@@ -166,10 +215,10 @@
       <div class="modal-body text-center">
         <h6 class="text-danger">Deseja mesmo cancelar esta venda?</h6>
       </div>
-      <div class="modal-footer d-flex justify-content-center">   
+      <div class="modal-footer d-flex justify-content-center">
         <form action="/venda/cancelar" method="POST">
-          <button type="submit" class="btn btn-primary">Cancelar Venda</button>          
-        </form>        
+          <button type="submit" class="btn btn-primary">Cancelar Venda</button>
+        </form>
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Voltar</button>
       </div>
     </div>
@@ -178,15 +227,18 @@
 
 <script>
   function atualizarModalFinalizar() {
-    // Exibe o valor do inputDesconto e valor final da venda no modal
+    // Exibe forma de pagamento, desconto e valor final no modal
+    let inputFormaPagamento = document.getElementById("inputFormaPagamento").value
+    document.getElementById("dadosPagamentoModal").innerHTML = `<p class="m-1">PAGAMENTO: ${inputFormaPagamento}</p>`
+
     let inputDesconto = parseFloat(document.getElementById("inputDesconto").value)
-    document.getElementById("valorDesconto").innerHTML = `<p class="m-1 text-danger ">DESCONTO: - R$ ${inputDesconto.toFixed(2)}</p>`
+    document.getElementById("valorDesconto").innerHTML = `<p class="m-1 text-danger ">Desconto: - R$ ${inputDesconto.toFixed(2)}</p>`
     let valorFinal = parseFloat("{{vendaAtiva.valorTotal}}") - inputDesconto
-    document.getElementById("valorFinal").innerHTML = `<p class="m-1 "><strong class="fs-6">VALOR FINAL: R$ ${valorFinal.toFixed(2)}</strong></p>`
-    // ---------------------------------------------------------
+    document.getElementById("valorFinal").innerHTML = `<p class="m-1 ">Valor Final: R$ ${valorFinal.toFixed(2)}</p>`
 
     // Passa o valor do desconto para o form
-
     document.getElementById("desconto").value = inputDesconto
+    // Passa a forma de pagamento para o form
+    document.getElementById("formaPagamento").value = inputFormaPagamento
   }
 </script>

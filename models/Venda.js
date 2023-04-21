@@ -19,6 +19,10 @@ const Venda = db.define("Venda",{
         type: DataTypes.DECIMAL(10,2),
         allowNull:false,
     },
+    formaPagamento:{
+        type: DataTypes.STRING,
+        allowNull: false
+    }
 });
 
 Venda.belongsTo(Cliente)

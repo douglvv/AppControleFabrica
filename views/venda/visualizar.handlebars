@@ -11,20 +11,20 @@
                             <p class="m-1"><strong>VENDA</strong></p>
                             <p class="m-1">DATA: {{venda.data}}</p>
                             <div id="status"></div>
+                            <p class="m-1">PAGAMENTO: {{venda.formaPagamento}}</p>
                         </div>
                         <div class="col-md-4">
                             <p class="m-1"><strong>CLIENTE</strong></p>
                             <p class="m-1">{{cliente.nome}}</p>
                             <p class="m-1">CPF/CNPJ: {{cliente.cpfCnpj}}</p>
                         </div>
-
                         {{!-- Parte de usuários - À FAZER
                         <div class="col-md-4">
                             <p class="m-1">Vendedor</p>
                             <p></p>
                             <p></p>
-                        </div>
-                    </div> --}}
+                        </div> --}}
+                    {{!-- </div> --}}
 
                 </div>
                 <table class="table table-striped">
@@ -84,14 +84,14 @@
     }
 
     // Ajusta o status da venda
-    let status = {{venda.status}}.toString()
+    let status = {{ venda.status }}.toString()
     if (status == 'false') {
-        let html = `<p class="m-1">STATUS: FINALIZADA</p>`
+        let html = `<p class="m-1">STATUS: Finalizada</p>`
         document.getElementById("status").innerHTML = html
     } else if (status == 'true') {
-        let html = `<p class="m-1">STATUS: ATIVA</p>`
+        let html = `<p class="m-1">STATUS: Ativa</p>`
         document.getElementById("status").innerHTML = html
     }
 
-    
+
 </script>
