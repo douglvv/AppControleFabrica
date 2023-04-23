@@ -7,7 +7,7 @@ const getProdutosVendaAtiva = require("../middlewares/produtosVendaAtiva")
 
 router.get("/", VendaController.mostrarVendas);
 router.get("/criar", VendaController.criarVenda);
-// router.get("/criar/procurarCliente", VendaController.procurarCliente)
+router.get("/criar/procurarCliente", VendaController.procurarCliente)
 router.post("/criar/detalhes", VendaController.criarVendaPost);
 router.get("/criar/detalhes",getVendaAtiva, getProdutosVendaAtiva, VendaController.mostrarDetalhesVendaAtiva)
 router.get('/criar/detalhes/procurar',getVendaAtiva, getProdutosVendaAtiva, VendaController.procurarProduto);

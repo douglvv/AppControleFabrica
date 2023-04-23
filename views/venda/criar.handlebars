@@ -17,13 +17,11 @@
                             <input type="date" class="form-control" name="data" value="{{data_atual}}" required>
                         </div>
                         <div class="col-md-7 mb-3">
-                            <label for="cliente" class="form-label">Cliente</label>
-                            <select class="form-select" aria-label="cliente" name="cliente">
-                                <option selected>Selecione o cliente</option>
-                                {{#each clientes}}
-                                <option value="{{this.id}}">{{this.nome}} | CPF / CNPJ: {{this.cpfCnpj}}</option>
-                                {{/each}}
-                            </select>
+                            <input type="hidden" name="clienteId" id="clienteId" value="">
+                            <label for="clienteInput" class="form-label">Cliente</label>
+                            <input type="text" name="cliente" id="clienteInput" class="form-control" value=""
+                                placeholder="Digite o nome ou CPF/CNPJ do cliente..." autocomplete="off">
+                            <div id="clientes"></div>
                         </div>
                     </div>
                     <div class="row">
@@ -42,9 +40,65 @@
     </div>
 </div>
 
-
 <script>
+    // Variavel input Cliente
+    let clienteInput = document.getElementById("clienteInput")
 
+    // A cada letra digitada realiza uma consulta
+    clienteInput.onkeyup = function () {
+        let query = clienteInput.value
+        procurarCliente(query)
+    }
 
+    // Procura o cliente no banco e exibe os resultados
+    async function procurarCliente(query = "") {
+        try {
+            if (query == "" | query == " ") {
+                return
+            }
+
+            const response = await fetch(`/venda/criar/procurarCliente?cliente=${query}`)
+            const data = await response.json()
+            clientes = data.clientes
+
+            let html = `<ul id="clientesResult" class="list-group position-absolute">`
+            clientes.forEach(cliente => {
+                html += `<a type="button" onclick="atualizarInput(${cliente.id})" class="list-group-item list-group-item-action">${cliente.nome} | CPF/CNPJ: ${cliente.cpfCnpj}</li>`
+            })
+            html += `</ul>`
+
+            document.getElementById("clientes").innerHTML = html
+        }
+        catch (error) {
+            console.log(error)
+        }
+    }
+
+    // Atualiza o input
+    function atualizarInput(id) {
+        document.getElementById("clienteId").value = id
+        console.log("ID:     "+id)
+
+        cliente = clientes.find(item => item.id == id)
+        console.log(cliente)
+
+        document.getElementById("clienteInput").value = `${cliente.nome} | CPF/CNPJ: ${cliente.cpfCnpj}`
+        console.log(cliente.nome + " | " + cliente.cpfCnpj)
+
+        fecharResultados()
+    }
+
+    // Ao clicar em uma opção, fecha os outros resultados
+    function fecharResultados(){
+        let clientesResult = document.getElementById("clientesResult")
+        if (clientesResult){
+            clientesResult.remove()
+        }
+    }
+
+    // Ao clicar fora da tela, fecha os resultados e zero o input
+    window.addEventListener("click", function(event){        
+        fecharResultados()
+    })
 
 </script>

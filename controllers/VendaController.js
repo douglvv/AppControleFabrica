@@ -25,7 +25,7 @@ module.exports = class VendaController {
                     qtd = false
                 }
 
-                const resultado = data.map((result) => result.get({ plain: true }))                
+                const resultado = data.map((result) => result.get({ plain: true }))
                 res.render('venda/listar', { resultado, qtd })
             })
             .catch((err) => console.log(err))
@@ -49,31 +49,32 @@ module.exports = class VendaController {
     }
 
     static async procurarCliente(req, res) {
-        let cliente = '';
-        if (req.query.cliente) {
-            cliente = req.query.cliente.trim();
+        try {
+            let cliente = '';
+            if (req.query.cliente) {
+                cliente = req.query.cliente.trim();
+            }
+            const clientes = await Cliente.findAll({
+                where: {
+                    [Op.or]: [
+                        {
+                            nome: {
+                                [Op.like]: `%${cliente}%`
+                            }
+                        },
+                        {
+                            cpfCnpj: {
+                                [Op.like]: `%${cliente}%`
+                            }
+                        }
+                    ]
+                }
+            });
+            res.json({clientes: clientes});
+        } catch (error) {
+            res.status(500).send("Erro interno, por favor tente novamente")
+            console.log(error)
         }
-        await Cliente.findAll({
-            where: {
-                [Op.or]: [
-                  {
-                    nome: {
-                      [Op.like]: `%${cliente}%`
-                    }
-                  },
-                  {
-                    cpfCnpj: {
-                      [Op.like]: `%${cliente}%`
-                    }
-                  }
-                ]
-              }
-        }).then((data) => {
-            const clientes = data.map((result) => result.get({ plain: true }))
-            const data_atual = new Date().toISOString().slice(0, 10)
-            res.render('venda/criar', { clientes, data_atual });
-        })
-            .catch((err) => console.log(err))
     }
 
     static criarVendaPost(req, res) {
@@ -81,7 +82,7 @@ module.exports = class VendaController {
             status: true,
             data: req.body.data,
             valorTotal: 0.00,
-            ClienteId: req.body.cliente,
+            ClienteId: req.body.clienteId,
             formaPagamento: ""
         }
         Venda.create(venda)
@@ -280,7 +281,7 @@ module.exports = class VendaController {
 
         // Altera o status da venda para false
         Venda.update(vendaAtiva, { where: { status: true } }).then(() => {
-            res.redirect('/venda/visualizar/'+id)
+            res.redirect('/venda/visualizar/' + id)
         })
             .catch((err) => console.log(err))
     }
@@ -347,7 +348,7 @@ module.exports = class VendaController {
                 formaPagamento: venda.formaPagamento,
                 ClienteId: venda.ClienteId,
             }
-            
+
             const dadosCliente = {
                 id: venda.Cliente.id,
                 nome: venda.Cliente.nome,
