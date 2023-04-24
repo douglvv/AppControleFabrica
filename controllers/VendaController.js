@@ -76,7 +76,7 @@ module.exports = class VendaController {
             console.log(error)
         }
     }
-
+    
     static criarVendaPost(req, res) {
         const venda = {
             status: true,

@@ -45,6 +45,9 @@ app.use("/produto", produtoRoutes);
 const vendaRoutes = require("./routes/vendaRoutes");
 app.use("/venda", vendaRoutes);
 
+const relatorioRoutes = require("./routes/relatorioRoutes")
+app.use("/relatorio", relatorioRoutes)
+
 
 //Inicia a aplicação somente depois de conectar na DB
 conn

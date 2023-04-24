@@ -16,11 +16,16 @@
                             <label for="data" class="form-label">Data</label>
                             <input type="date" class="form-control" name="data" value="{{data_atual}}" required>
                         </div>
-                        <div class="col-md-7 mb-3">
-                            <input type="hidden" name="clienteId" id="clienteId" value="">
+                        <div class="col-md-6 mb-3">
+                            <input type="hidden" name="clienteId" id="clienteId" value="" required>
                             <label for="clienteInput" class="form-label">Cliente</label>
-                            <input type="text" name="cliente" id="clienteInput" class="form-control" value=""
-                                placeholder="Digite o nome ou CPF/CNPJ do cliente..." autocomplete="off">
+                            <div class="input-group">
+                                <input type="text" name="cliente" id="clienteInput" class="form-control" value=""
+                                    placeholder="Digite o nome ou CPF/CNPJ do cliente..." autocomplete="off" required>
+                                <button type="button" id="buttonRemoverCliente" class="btn disabled input-group-append" title="Limpar" onclick="removerCliente()"> 
+                                    <i class="bi bi-trash3"></i>
+                                </button>
+                            </div>
                             <div id="clientes"></div>
                         </div>
                     </div>
@@ -43,6 +48,8 @@
 <script>
     // Variavel input Cliente
     let clienteInput = document.getElementById("clienteInput")
+    let clienteId = document.getElementById("clienteId")
+    let buttonRemoverCliente = document.getElementById("buttonRemoverCliente")
 
     // A cada letra digitada realiza uma consulta
     clienteInput.onkeyup = function () {
@@ -63,7 +70,7 @@
 
             let html = `<ul id="clientesResult" class="list-group position-absolute">`
             clientes.forEach(cliente => {
-                html += `<a type="button" onclick="atualizarInput(${cliente.id})" class="list-group-item list-group-item-action">${cliente.nome} | CPF/CNPJ: ${cliente.cpfCnpj}</li>`
+                html += `<a type="button" title="Selecionar" onclick="atualizarInput(${cliente.id})" class="list-group-item list-group-item-action">${cliente.nome} | CPF/CNPJ: ${cliente.cpfCnpj}</a>`
             })
             html += `</ul>`
 
@@ -76,29 +83,46 @@
 
     // Atualiza o input
     function atualizarInput(id) {
-        document.getElementById("clienteId").value = id
-        console.log("ID:     "+id)
+        // Enviar para o controller o id do cliente
+        clienteId.value = id
 
+        // Encontra o cliente
         cliente = clientes.find(item => item.id == id)
-        console.log(cliente)
 
-        document.getElementById("clienteInput").value = `${cliente.nome} | CPF/CNPJ: ${cliente.cpfCnpj}`
-        console.log(cliente.nome + " | " + cliente.cpfCnpj)
+        // Atualiza a view com os dados do cliente selecionado
+        clienteInput.value = `${cliente.nome} | CPF/CNPJ: ${cliente.cpfCnpj}`
+        clienteInput.disabled = true
+        
+        // Deixa o botão limpar habilitado
+        buttonRemoverCliente.classList.remove("disabled")
 
         fecharResultados()
     }
 
     // Ao clicar em uma opção, fecha os outros resultados
-    function fecharResultados(){
+    function fecharResultados() {
         let clientesResult = document.getElementById("clientesResult")
-        if (clientesResult){
+        if (clientesResult) {
             clientesResult.remove()
         }
     }
 
-    // Ao clicar fora da tela, fecha os resultados e zero o input
-    window.addEventListener("click", function(event){        
+    // Limpa o input
+    function removerCliente(){
+        // retorna os valores para o estado inicial
+        clienteId.value = ""
+        clienteInput.value = ""
+        clienteInput.disabled = false
+        
+        // desabilita o botão de limpar
+        buttonRemoverCliente.classList.add("disabled")
+    }
+
+    // Ao clicar na tela, fecha os resultados
+    window.addEventListener("click", function (event) {
         fecharResultados()
     })
+
+
 
 </script>
