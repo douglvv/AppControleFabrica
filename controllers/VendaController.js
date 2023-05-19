@@ -26,6 +26,9 @@ module.exports = class VendaController {
                 }
 
                 const resultado = data.map((result) => result.get({ plain: true }))
+                resultado.forEach((item) => {
+                    item.data = item.data.toLocaleString('pt-br')
+                })
                 res.render('venda/listar', { resultado, qtd })
             })
             .catch((err) => console.log(err))

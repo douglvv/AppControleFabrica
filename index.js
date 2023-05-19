@@ -31,9 +31,10 @@ const VendaProduto = require("./models/VendaProduto")
 
 
 //Rota inicial
-app.get('/', function (req, res) {
-  res.render('home')
-})
+
+const DashboardController = require("./controllers/DashboardController")
+
+app.get('/', DashboardController.mostrarDashboard)
 
 //Rotas dos models
 const clienteRoutes = require("./routes/clienteRoutes");

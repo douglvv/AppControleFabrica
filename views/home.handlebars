@@ -1,4 +1,83 @@
 <title>Início</title>
-<div class="container-xl">
-    <h2>Dashboard</h2>
-</div>
+    <div class="container-xl">
+        
+        <div class="table-title">
+            <h4>Dashboard</h4>
+            <h5>{{dataAtual}}</h5>
+        </div>
+
+        {{!-- CARDS --}}
+        <div class="row mb-3">
+            <div class="col-md-3">
+                <div class="card dashboard-cards">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col d-flex justify-content-center align-items-center">
+                                <h5 class="card-text dashboard-cards-text"><small>Vendas Dia: </small><br>{{qtdVendas}}
+                                </h5>
+                            </div>
+                            <div class="col d-flex justify-content-center align-items-center">
+                                <i class="bi bi-box-seam fs-4 dashboard-card-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card dashboard-cards">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col d-flex justify-content-center align-items-center">
+                                <h5 class="card-text dashboard-cards-text"><small>Receita Dia:
+                                    </small><br>R${{faturamentoDia}}</h5>
+                            </div>
+                            <div class="col d-flex justify-content-center align-items-center">
+                                <i class="bi bi-cash-coin fs-4 dashboard-card-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card dashboard-cards">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col d-flex justify-content-center align-items-center">
+                                <h5 class="card-text dashboard-cards-text"><small>Estoque: </small><br>{{qtdProdutos}}
+                                    und.</h5>
+                            </div>
+                            <div class="col d-flex justify-content-center align-items-center">
+                                <i class="bi bi-box-seam fs-4 dashboard-card-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card dashboard-cards">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col d-flex justify-content-center align-items-center">
+                                <h5 class="card-text dashboard-cards-text"><small>Nº Clientes:
+                                    </small><br>{{qtdClientes}}</h5>
+                            </div>
+                            <div class="col d-flex justify-content-center align-items-center">
+                                <i class="bi bi-person-circle fs-4 dashboard-card-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="charts">
+            
+        </div>
+
+
+
+    </div>
+
+
+    {{!--
+</div> --}}
