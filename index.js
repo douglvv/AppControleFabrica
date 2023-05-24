@@ -31,12 +31,11 @@ const VendaProduto = require("./models/VendaProduto")
 
 
 //Rota inicial
-
 const DashboardController = require("./controllers/DashboardController")
-
 app.get('/', DashboardController.mostrarDashboard)
 
-//Rotas dos models
+
+//Rotas
 const clienteRoutes = require("./routes/clienteRoutes");
 app.use("/cliente", clienteRoutes);
 
@@ -48,6 +47,9 @@ app.use("/venda", vendaRoutes);
 
 const relatorioRoutes = require("./routes/relatorioRoutes")
 app.use("/relatorio", relatorioRoutes)
+
+// Rota para fazer o fetch dos dados para preencher o 
+app.use("/dadosChart", DashboardController.dadosChart)
 
 
 //Inicia a aplicação somente depois de conectar na DB
