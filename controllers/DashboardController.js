@@ -67,20 +67,53 @@ module.exports = class DashboardController {
 
 
         // Renderiza a página
-        res.render('home', { dataAtual: dataAtual, qtdVendas: qtdVendas, faturamentoDia: faturamentoDia, qtdClientes: qtdClientes, qtdProdutos: qtdProdutos})
+        res.render('home', { dataAtual: dataAtual, qtdVendas: qtdVendas, faturamentoDia: faturamentoDia, qtdClientes: qtdClientes, qtdProdutos: qtdProdutos })
     }
 
     static async dadosChart(req, res) { // Retorna um Json com os dados para popular o gráfico
+        
         // ================= GRAFICO FATURAMENTO SEMANAL =========================
-        var sql = "SELECT DAYNAME(data) AS dia, SUM(valorTotal) AS faturamento FROM vendas WHERE WEEK(data) = WEEK(CURDATE()) GROUP BY dia ORDER BY dia;";
+        var sql = `SELECT CASE
+          WHEN DAYNAME(data) = 'Sunday' THEN 'Domingo'
+          WHEN DAYNAME(data) = 'Monday' THEN 'Segunda-feira'
+          WHEN DAYNAME(data) = 'Tuesday' THEN 'Terça-feira'
+          WHEN DAYNAME(data) = 'Wednesday' THEN 'Quarta-feira'
+          WHEN DAYNAME(data) = 'Thursday' THEN 'Quinta-feira'
+          WHEN DAYNAME(data) = 'Friday' THEN 'Sexta-feira'
+          WHEN DAYNAME(data) = 'Saturday' THEN 'Sábado'
+        END AS dia,
+        COALESCE(SUM(valorTotal), 0) AS faturamento FROM vendas WHERE WEEK(data) = WEEK(CURDATE())
+            GROUP BY dia ORDER BY dia;`
+
+        var faturamento = [
+            {dia: 'Domingo', faturamento: '0.00'}, 
+            {dia: 'Segunda-feira', faturamento: '0.00'},
+            {dia: 'Terça-feira', faturamento: '0.00'}, 
+            {dia: 'Quarta-feira', faturamento: '0.00'},
+            {dia: 'Quinta-feira', faturamento: '0.00'},
+            {dia: 'Sexta-feira', faturamento: '0.00'},
+            {dia: 'Sábado', faturamento: '0.00'}            
+        ]
 
         var faturamentoSemanal = await db.query(sql, {
             type: db.QueryTypes.SELECT,
             raw: true
         });
 
-        console.log(faturamentoSemanal)
-        res.json(faturamentoSemanal)
+        //  Compara as duas arrays e atribui o faturamento correto em cada dia.
+        // Essa comparação é necessária pois, caso o faturamento seja nulo em algum dos dias da semana,
+        // a query do sql não irá retornar nada para esse dia, afetando a ordem das datas no gráfico.
+        for (const item of faturamento) { 
+            const matchingItem = faturamentoSemanal.find(
+              (semanalItem) => semanalItem.dia === item.dia
+            );
+            if (matchingItem) {
+              item.faturamento = matchingItem.faturamento || '0.00';
+            }
+          }
+
+        // console.log(faturamento)
+        res.json(faturamento)
     }
 
-}
+} // Fim

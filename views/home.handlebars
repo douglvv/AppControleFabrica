@@ -100,7 +100,8 @@
         new Chart(canvasVendas, {
             type: 'bar',
             data: {
-                labels: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'], // Linha X (horizontal) do gráfico
+                labels: dias,
+                //['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'], // Linha X (horizontal) do gráfico
                 datasets: [{
                     label: 'Receita', // Titulo linha Y (vertical)
                     data: faturamentoDias, // Dados da linha Y
