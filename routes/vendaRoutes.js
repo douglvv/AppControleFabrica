@@ -16,8 +16,6 @@ router.post('/criar/detalhes/remover/:produtoId',getVendaAtiva, VendaController.
 router.post('/finalizar',getVendaAtiva, VendaController.finalizarVenda)
 router.post("/cancelar", VendaController.cancelarVenda);
 router.get("/visualizar/:id", VendaController.mostrarDetalhes)
-router.get("/editar/:id", VendaController.editarVenda);
-router.post("/editarPost", VendaController.editarVendaPost);
 router.post("/remover", VendaController.removerVenda);
 
 

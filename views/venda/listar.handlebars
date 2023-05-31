@@ -1,3 +1,4 @@
+<title>Vendas</title>
 <div class="container-xl">
     <div class="table-responsive">
         <div class="table-wrapper">
@@ -36,14 +37,11 @@
                             <span class="actions">
                                 <a href="/venda/visualizar/{{this.id}}" data-title="Detalhes"><i
                                         class="bi bi-info-circle-fill"></i></a>
-                                <form action="/venda/remover" method="POST">
-                                    <input type="hidden" name="id" value={{this.id}}>
-                                    <button type="submit" data-toggle="tooltip" data-placement="top"
-                                        data-title="Excluir">
-                                        <i class="bi bi-trash3-fill" id="lixeira"></i>
-                                    </button>
-                                </form>
-
+                                <button type="button" onclick="atualizarFormModal({{this.id}})" data-toggle="tooltip"
+                                    data-placement="top" data-title="Excluir" data-bs-toggle="modal"
+                                    data-bs-target="#modalExcluir">
+                                    <i class="bi bi-trash3-fill" id="lixeira"></i>
+                                </button>
                             </span>
                         </td>
                     </tr>
@@ -54,6 +52,31 @@
             </table>
         </div>
     </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="modalExcluir" tabindex="-1" aria-labelledby="modalExcluirLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="modalExcluirLabel">Confirmação</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Deseja mesmo excluir este registro?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                    <form action="venda/remover" method="post">
+                        <input type="hidden" id="inputFormModal" name="id" value="">
+                        <button type="submit" class="btn btn-primary">Excluir</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
 </div>
 <!--Js do datatable com exportações-->
 <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
@@ -86,4 +109,13 @@
         });
 
     });
+
+
+    function atualizarFormModal(id = "") { // Passa a id do item a ser excluido para o form do modal
+        const inputFormModal = document.getElementById("inputFormModal");
+
+        inputFormModal.value = id
+    }
+
+
 </script>

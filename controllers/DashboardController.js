@@ -72,14 +72,14 @@ module.exports = class DashboardController {
 
     static async dadosChart(req, res) { // Retorna um Json com os dados para popular o gráfico
         // ================= GRAFICO FATURAMENTO SEMANAL =========================
-        var sql = "SELECT DAYNAME(data) AS dia, SUM(valorTotal) AS faturamento FROM vendas WHERE WEEK(data) = WEEK(CURDATE()) GROUP BY DAYNAME(data) ORDER BY data;"
+        var sql = "SELECT DAYNAME(data) AS dia, SUM(valorTotal) AS faturamento FROM vendas WHERE WEEK(data) = WEEK(CURDATE()) GROUP BY dia ORDER BY dia;";
 
         var faturamentoSemanal = await db.query(sql, {
             type: db.QueryTypes.SELECT,
             raw: true
         });
 
-        // console.log(faturamentoSemanal)
+        console.log(faturamentoSemanal)
         res.json(faturamentoSemanal)
     }
 

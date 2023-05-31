@@ -73,13 +73,13 @@ module.exports = class VendaController {
                     ]
                 }
             });
-            res.json({clientes: clientes});
+            res.json({ clientes: clientes });
         } catch (error) {
             res.status(500).send("Erro interno, por favor tente novamente")
             console.log(error)
         }
     }
-    
+
     static criarVendaPost(req, res) {
         const venda = {
             status: true,
@@ -289,37 +289,41 @@ module.exports = class VendaController {
             .catch((err) => console.log(err))
     }
 
-    static editarVenda(req, res) {
-        const id = req.params.id
-        Venda.findOne({ where: { id: id }, raw: true })
-            .then((venda) => {
-                res.render('venda/editar', { venda })
-            })
-            .catch((err) => console.log(err))
-    }
+    static async removerVenda(req, res) {
+        const vendaId = req.body.id;
 
-    static editarVendaPost(req, res) {
-        const id = req.body.id
-        const venda = {
-            nomeVenda: req.body.nomeVenda,
-            descricao: req.body.descricao,
-            qtd: req.body.qtd,
-            valorUnitario: req.body.valorUnitario,
+        try { // Encontra os produtos da venda a ser excluida
+            const response = await VendaProduto.findAll({
+                where: {
+                    VendaId: vendaId
+                },
+                include: [{
+                    model: Produto
+                }]
+            });
+
+            const produtos = response.map((result) => result.get({ plain: true })); // Mapeia os produtos numa array
+            // console.log(produtos)
+
+            for (const item of produtos) { // Loop para percorrer todos os produtos
+                const qtd = item.qtd;
+                let qtdEstoque = item.Produto.qtd
+                const qtdAtualizada = qtdEstoque += qtd
+                const produtoId = item.ProdutoId;
+
+                await Produto.update( // Adiciona novamente os produtos ao estoque
+                    { qtd: qtdAtualizada },
+                    { where: { id: produtoId } }
+                )
+            }
+
+            await Venda.destroy({ where: { id: vendaId } }); // Excluida a venda
+
+            res.redirect('/venda');
+        } catch (error) {
+            console.log(error);
+            res.status(404).send('Erro ao excluir a venda. \n' + error)
         }
-        Venda.update(venda, { where: { id: id } })
-            .then(() => {
-                res.redirect('/venda/')
-            })
-            .catch((err) => console.log(err))
-    }
-
-    static removerVenda(req, res) {
-        const id = req.body.id
-        Venda.destroy({ where: { id: id } })
-            .then(() => {
-                res.redirect('/venda')
-            })
-            .catch((err) => console.log(err))
     }
 
     static cancelarVenda(req, res) {
