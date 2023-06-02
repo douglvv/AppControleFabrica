@@ -7,7 +7,7 @@ module.exports = class ProdutoController {
     static async gerarRelatorioFaturamento(req, res) {
         const dataInicial = req.query.dataInicial
         const dataFinal = req.query.dataFinal
-        console.log('data inicial: ' + dataInicial + "\tdata final: " + dataFinal + "\n")
+        // console.log('data inicial: ' + dataInicial + "\tdata final: " + dataFinal + "\n")
 
         const data = await Venda.findAll({
             where: {

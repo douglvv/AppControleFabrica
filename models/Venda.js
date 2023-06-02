@@ -5,6 +5,7 @@ const db = require("../db/conn")
 const Produto = require("../models/Produto");
 const Cliente = require("./Cliente");
 const VendaProduto = require("../models/VendaProduto")
+const Usuario = require("../models/Usuario")
 
 const Venda = db.define("Venda",{
     status:{
@@ -24,6 +25,9 @@ const Venda = db.define("Venda",{
         allowNull: false
     }
 });
+
+Venda.belongsTo(Usuario)
+Usuario.hasMany(Venda)
 
 Venda.belongsTo(Cliente)
 Cliente.hasMany(Venda)

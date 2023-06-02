@@ -1,5 +1,6 @@
 const { Op } = require('sequelize')
 const Cliente = require('../models/Cliente.js')
+const Usuario = require('../models/Usuario.js')
 const Produto = require('../models/Produto.js')
 const Venda = require('../models/Venda.js')
 const VendaProduto = require('../models/VendaProduto.js')
@@ -85,6 +86,7 @@ module.exports = class VendaController {
             status: true,
             data: req.body.data,
             valorTotal: 0.00,
+            UsuarioId: req.session.userid,
             ClienteId: req.body.clienteId,
             formaPagamento: ""
         }
@@ -184,7 +186,7 @@ module.exports = class VendaController {
             valorTotal: valorTotal
         };
 
-        await Venda.update(vendaAtualizada, { where: { status: true } })
+        await Venda.update(vendaAtualizada, { where: { status: true, UsuarioId: req.session.userid } })
         vendaAtiva.save()
 
         // Envia todos os produtos da venda atiava para a view
@@ -232,7 +234,7 @@ module.exports = class VendaController {
                 valorTotal: valorTotal
             };
 
-            await Venda.update(vendaAtualizada, { where: { status: true } })
+            await Venda.update(vendaAtualizada, { where: { status: true, UsuarioId: req.session.userid } })
 
             // Atualiza a qtd do produto em estoque            
             let qtdEstoque = parseInt(produtoRemovido.qtd)
@@ -283,7 +285,7 @@ module.exports = class VendaController {
         }
 
         // Altera o status da venda para false
-        Venda.update(vendaAtiva, { where: { status: true } }).then(() => {
+        Venda.update(vendaAtiva, { where: { status: true, UsuarioId: req.session.userid } }).then(() => {
             res.redirect('/venda/visualizar/' + id)
         })
             .catch((err) => console.log(err))
@@ -327,7 +329,7 @@ module.exports = class VendaController {
     }
 
     static cancelarVenda(req, res) {
-        Venda.destroy({ where: { status: true } })
+        Venda.destroy({ where: { status: true, UsuarioId: req.session.userid } })
             .then(() => {
                 res.redirect('/venda')
             })
@@ -344,7 +346,11 @@ module.exports = class VendaController {
                 },
                 include: [{
                     model: Cliente
-                }]
+                },
+                {
+                    model: Usuario
+                },
+                ]
             });
 
             let dadosVenda = {
@@ -363,6 +369,11 @@ module.exports = class VendaController {
                 telefone: venda.Cliente.telefone
             }
 
+            const dadosUsuario = {
+                id: venda.Usuario.id,
+                nome: venda.Usuario.nome
+            }
+
             const data = await VendaProduto.findAll({
                 where: {
                     VendaId: venda.id
@@ -375,7 +386,7 @@ module.exports = class VendaController {
             const produtos = data.map((result) => result.get({ plain: true }))
 
 
-            res.render("venda/visualizar", { venda: dadosVenda, cliente: dadosCliente, produtos: produtos });
+            res.render("venda/visualizar", { venda: dadosVenda, cliente: dadosCliente, produtos: produtos, vendedor: dadosUsuario });
 
         } catch (error) {
             console.log(error)

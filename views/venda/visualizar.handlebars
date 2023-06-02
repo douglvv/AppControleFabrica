@@ -22,46 +22,44 @@
                         {{!-- Parte de usuários - À FAZER --}}
                         <div class="col-md-3">
                             <p class="m-1"><strong>VENDEDOR</strong></p>
-                            <p></p>
-                            <p></p>
-                        {{!-- </div> --}}
-                    </div>
+                            <p class="m-1">{{vendedor.nome}}</p>
+                        </div>
 
-                </div>
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>PRODUTO</th>
-                            <th>QTD.</th>
-                            <th>VALOR UNITÁRIO</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {{#each produtos}}
-                        <tr>
-                            <td>{{this.Produto.nomeProduto}}</td>
-                            <td>{{this.qtd}}</td>
-                            <td>{{this.valor}}</td>
-                        </tr>
-                        {{/each}}
-                    </tbody>
-                </table>
-                <div class="row justify-content-end">
-                    <div class="col-md-4">
-                        <table class="table">
-                            <tbody>
-                                <tr>
-                                    <td><strong>VALOR TOTAL: </strong></td>
-                                    <td>R$ {{venda.valorTotal}}</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    </div>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>PRODUTO</th>
+                                <th>QTD.</th>
+                                <th>VALOR UNITÁRIO</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each produtos}}
+                            <tr>
+                                <td>{{this.Produto.nomeProduto}}</td>
+                                <td>{{this.qtd}}</td>
+                                <td>{{this.valor}}</td>
+                            </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                    <div class="row justify-content-end">
+                        <div class="col-md-4">
+                            <table class="table">
+                                <tbody>
+                                    <tr>
+                                        <td><strong>VALOR TOTAL: </strong></td>
+                                        <td>R$ {{venda.valorTotal}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 </div>
 <div class="container d-flex justify-content-center">
     <div class="row">

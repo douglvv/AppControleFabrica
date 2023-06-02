@@ -25,7 +25,7 @@
                     </tr>
                     {{/each}}
                 </tbody>
-                <tfoot>
+                <tfoot id="tfoot">                    
                 </tfoot>
             </table>
         </div>
@@ -45,7 +45,6 @@
 <script>
     $(document).ready(function () {
         $('#relatorio').DataTable({
-
             "language": {
                 "url": "/cdn/pt-BR.json",
             },
@@ -54,7 +53,28 @@
                 {
                     extend: 'collection',
                     text: 'Exportar',
-                    buttons: ['pdf', 'excel', 'csv', 'print'],
+                    buttons: [
+                        {
+                            extend: 'pdf',
+                            title: 'Relatório de Faturamento',
+                            filename: 'Relatório de Faturamento'
+                        },
+                        {
+                            extend: 'excel',
+                            title: 'Relatório de Faturamento',
+                            filename: 'Relatório de Faturamento'
+                        },
+                        {
+                            extend: 'csv',
+                            title: 'Relatório de Faturamento',
+                            filename: 'Relatório de Faturamento'
+                        },
+                        {
+                            extend: 'print',
+                            title: 'Relatório de Faturamento',
+                            filename: 'Relatório de Faturamento'
+                        }
+                    ],
                 }
             ],
             ordering: false,
@@ -64,6 +84,5 @@
             scrollX: true,
 
         });
-
     });
 </script>
