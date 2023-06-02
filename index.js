@@ -3,6 +3,7 @@ const exphbs = require("express-handlebars");
 const session = require("express-session");
 const FileStore = require("session-file-store")(session);
 const flash = require("express-flash");
+const bcrypt = require('bcryptjs')
 
 //Instancia o express
 const app = express();
@@ -44,8 +45,6 @@ app.use(
 
 app.use(flash());
 
-
-
 // Models
 const Cliente = require("./models/Cliente");
 const Produto = require("./models/Produto")
@@ -70,6 +69,24 @@ app.get('/logout', function (req, res) {
   res.redirect('/login')
 })
 
+// Função para criar um usuário temporário para o primeiro acesso
+app.get('/primeiroAcesso', function(req, res) {
+  const nome = 'modafoker' // Escolher nome do primeiro acesso
+  const senha = 'modafoker' // Escolher senha do primeiro acesso
+  const salt = bcrypt.genSaltSync(10)
+  const hashSenha = bcrypt.hashSync(senha, salt) //Cria o hash
+
+  const usuario = {
+      nome: nome,
+      senha: hashSenha,
+  }
+  Usuario.create(usuario)
+      .then(() => {
+          res.redirect('/')
+      })
+      .catch((err) => console.log(err))
+})
+
 
 //Rotas
 const clienteRoutes = require("./routes/clienteRoutes");
@@ -89,6 +106,7 @@ app.use("/usuario", usuarioRoutes)
 
 // Rota para fazer o fetch dos dados para preencher o 
 app.use("/dadosChart", verificaSessao, DashboardController.dadosChart)
+
 
 
 //Inicia a aplicação somente depois de conectar na DB
