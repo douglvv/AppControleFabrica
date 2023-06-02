@@ -22,6 +22,7 @@
                         <th>Forma Pgto.</th>
                         <th>Data</th>
                         <th>Cliente</th>
+                        <th>Vendedor</th>
                         <th>Ações</th>
                     </tr>
                 </thead>
@@ -33,6 +34,7 @@
                         <td>{{this.formaPagamento}}</td>
                         <td>{{this.data}}</td>
                         <td>{{this.Cliente.nome}}</td>
+                        <td>{{this.Usuario.nome}}</td>
                         <td>
                             <span class="actions">
                                 <a href="/venda/visualizar/{{this.id}}" data-title="Detalhes"><i

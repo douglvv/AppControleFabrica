@@ -15,6 +15,10 @@ module.exports = class VendaController {
             include: [{
                 model: Cliente,
                 required: true
+            },
+            {
+                model: Usuario,
+                required: true
             }],
             order: [['createdAt', order]],
             limit: 1000,
