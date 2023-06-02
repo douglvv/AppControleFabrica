@@ -1,12 +1,13 @@
 const express = require("express");
 const router = express.Router();
 const ClienteController = require("../controllers/ClienteController");
+const verificaSessao = require("../middlewares/verificaSessao")
 
-router.get("/", ClienteController.mostrarClientes);
-router.get("/criar", ClienteController.criarCliente);
-router.post("/criarPost", ClienteController.criarClientePost);
-router.get("/editar/:id", ClienteController.editarCliente);
-router.post("/editarPost", ClienteController.editarClientePost);
-router.post("/remover", ClienteController.removerCliente);
+router.get("/", verificaSessao, ClienteController.mostrarClientes);
+router.get("/criar",verificaSessao, ClienteController.criarCliente);
+router.post("/criarPost", verificaSessao, ClienteController.criarClientePost);
+router.get("/editar/:id", verificaSessao, ClienteController.editarCliente);
+router.post("/editarPost", verificaSessao, ClienteController.editarClientePost);
+router.post("/remover", verificaSessao, ClienteController.removerCliente);
 
 module.exports = router;

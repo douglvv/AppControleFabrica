@@ -84,31 +84,34 @@ module.exports = class UsuarioController {
     }
 
     static async loginPost(req, res) {
-        const nome = req.body.nome
-        const senha = req.body.senha
-        
-        // Encontra o usuario no banco
-        const usuario = await Usuario.findOne({ where: { nome: nome } })
-        if (!usuario) {
-            res.render('login', {
-                mensagem: 'Usuário não encontrado!', layout: false,
-            })
-            return
-        }
-        // Compara a senha
-        const senhaCorreta = bcrypt.compareSync(senha, usuario.senha)
-        if (!senhaCorreta) {
-            res.render('login', {
-                mensagem: 'Senha inválida!', layout: false,
-            })
-            return
-        }
-        
-        // Cria a sessão
-        req.session.userid = usuario.id
-        req.session.save(() => {
-            res.redirect('/')
-        })
-    }
+        const nome = req.body.nome;
+        const senha = req.body.senha;
 
+        try {
+            const usuario = await Usuario.findOne({ where: { nome: nome } });
+            if (!usuario) {
+                //req.flash('error', 'Usuário não encontrado!');
+                res.redirect(303, '/login');
+
+                return;
+            }
+
+            const senhaCorreta = bcrypt.compareSync(senha, usuario.senha);
+            if (!senhaCorreta) {
+                //req.flash('error', 'Senha inválida!');
+                res.redirect(303, '/login');
+
+                return;
+            }
+
+            req.session.userid = usuario.id;
+            req.session.save(() => {
+                res.redirect('/');
+            });
+        } catch (error) {
+            console.error(error);
+            req.flash('error', 'Erro durante o login. Por favor, tente novamente.');
+            res.redirect('/login');
+        }
+    }
 } //Fim

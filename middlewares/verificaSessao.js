@@ -1,11 +1,11 @@
-
-
 function verificaSessao(req, res, next) {
     const userId = req.session.userid
     if (!userId) {
-        res.redirect('/login')
+        res.redirect(303,'/login')
     }
-    next()
+    else(
+        next()
+    )
 }
 
 module.exports = verificaSessao

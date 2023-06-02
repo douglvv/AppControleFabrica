@@ -41,8 +41,9 @@ app.use(
     },
   }),
 )
-// Flash messages
+
 app.use(flash());
+
 
 
 // Models
@@ -56,10 +57,17 @@ const Usuario = require("./models/Usuario")
 //Rota inicial
 const verificaSessao = require("./middlewares/verificaSessao")
 const DashboardController = require("./controllers/DashboardController")
-app.get('/', verificaSessao , DashboardController.mostrarDashboard)
+app.get('/', verificaSessao, DashboardController.mostrarDashboard)
 
+// Login
 app.get('/login', function (req, res) {
-  res.render('login', { layout: false })
+  res.render('login', { layout: false });
+});
+
+// Logout
+app.get('/logout', function (req, res) {
+  req.session.destroy()
+  res.redirect('/login')
 })
 
 
@@ -80,7 +88,7 @@ const usuarioRoutes = require("./routes/usuarioRoutes")
 app.use("/usuario", usuarioRoutes)
 
 // Rota para fazer o fetch dos dados para preencher o 
-app.use("/dadosChart", DashboardController.dadosChart)
+app.use("/dadosChart", verificaSessao, DashboardController.dadosChart)
 
 
 //Inicia a aplicação somente depois de conectar na DB
