@@ -7,53 +7,63 @@ const VendaProduto = require('../models/VendaProduto.js')
 
 module.exports = class VendaController {
     static mostrarVendas(req, res) {
+        try {
+            // order resultados, novos registros primeiro
+            let order = 'DESC'
 
-        // order resultados, novos registros primeiro
-        let order = 'DESC'
-
-        Venda.findAll({
-            include: [{
-                model: Cliente,
-                required: true
-            },
-            {
-                model: Usuario,
-                required: true
-            }],
-            order: [['createdAt', order]],
-            limit: 1000,
-        })
-            .then((data) => {
-                let qtd = data.length
-
-                if (qtd === 0) {
-                    qtd = false
-                }
-
-                const resultado = data.map((result) => result.get({ plain: true }))
-                resultado.forEach((item) => {
-                    item.data = item.data.toLocaleString('pt-br')
-                })
-                res.render('venda/listar', { resultado, qtd })
+            Venda.findAll({
+                include: [{
+                    model: Cliente,
+                    required: true
+                },
+                {
+                    model: Usuario,
+                    required: true
+                }],
+                order: [['createdAt', order]],
+                limit: 1000,
             })
-            .catch((err) => console.log(err))
+                .then((data) => {
+                    let qtd = data.length
+
+                    if (qtd === 0) {
+                        qtd = false
+                    }
+
+                    const resultado = data.map((result) => result.get({ plain: true }))
+                    resultado.forEach((item) => {
+                        item.data = item.data.toLocaleString('pt-br')
+                    })
+                    res.render('venda/listar', { resultado, qtd })
+                })
+                .catch((err) => console.log(err))
+        } catch (error) {
+            console.log(error.message);
+            res.send(error.message);
+        }
+
     }
 
     static async criarVenda(req, res) {
-
-        let ordenar = 'ASC'
-        Cliente.findAll({
-            order: [['nome', ordenar]],
-            limit: 1000,
-        })
-            .then((data) => {
-                const clientes = data.map((result) => result.get({ plain: true }))
-                const data_atual = new Date().toISOString().slice(0, 10)
-                res.render('venda/criar', {
-                    clientes, data_atual
-                })
+        try {
+            let ordenar = 'ASC'
+            Cliente.findAll({
+                order: [['nome', ordenar]],
+                limit: 1000,
             })
-            .catch((err) => console.log(err))
+                .then((data) => {
+                    const clientes = data.map((result) => result.get({ plain: true }))
+                    const data_atual = new Date().toISOString().slice(0, 10)
+                    res.render('venda/criar', {
+                        clientes, data_atual
+                    })
+                })
+                .catch((err) => console.log(err))
+        } catch (error) {
+            console.log(error.message);
+            res.send(error.message);
+        }
+
     }
 
     static async procurarCliente(req, res) {
@@ -86,125 +96,145 @@ module.exports = class VendaController {
     }
 
     static criarVendaPost(req, res) {
-        const venda = {
-            status: true,
-            data: req.body.data,
-            valorTotal: 0.00,
-            UsuarioId: req.session.userid,
-            ClienteId: req.body.clienteId,
-            formaPagamento: ""
+        try {
+            const venda = {
+                status: true,
+                data: req.body.data,
+                valorTotal: 0.00,
+                UsuarioId: req.session.userid,
+                ClienteId: req.body.clienteId,
+                formaPagamento: ""
+            }
+            Venda.create(venda)
+                .then(() => {
+                    res.redirect(303, "/venda/criar/detalhes")
+                })
+                .catch((err) => console.log(err))
+        } catch (error) {
+            console.log(error.message);
+            res.send(error.message);
         }
-        Venda.create(venda)
-            .then(() => {
-                res.redirect(303, "/venda/criar/detalhes")
-            })
-            .catch((err) => console.log(err))
     }
 
     static async mostrarDetalhesVendaAtiva(req, res) {
-        // Encontra a venda ativa e os produtos da venda
-        let vendaAtiva = req.vendaAtiva.toJSON()
-        console.log(vendaAtiva)
-        let produtos = req.produtosVendaAtiva
+        try {
+            // Encontra a venda ativa e os produtos da venda
+            let vendaAtiva = req.vendaAtiva.toJSON()
+            console.log(vendaAtiva)
+            let produtos = req.produtosVendaAtiva
 
-        res.render("venda/venda", { vendaAtiva: vendaAtiva, produtosVendaAtiva: produtos })
+            res.render("venda/venda", { vendaAtiva: vendaAtiva, produtosVendaAtiva: produtos })
+        } catch (error) {
+            console.log(error.message);
+            res.send(error.message);
+        }
 
     }
 
     static async procurarProduto(req, res) {
-        let produto = '';
-        if (req.query.produto) {
-            produto = req.query.produto.trim();
-        }
-        await Produto.findAll({
-            where: {
-                [Op.or]: [
-                    { nomeProduto: { [Op.like]: `%${produto}%` } },
-                    { id: { [Op.like]: `%${produto}%` } }
-                ]
+        try {
+            let produto = '';
+            if (req.query.produto) {
+                produto = req.query.produto.trim();
             }
-        }).then((data) => {
-            const produtos = data.map((result) => result.get({ plain: true }))
-            const vendaAtiva = req.vendaAtiva.toJSON()
-            let produtosVendaAtiva = req.produtosVendaAtiva
-            res.render('venda/venda', { produtos, vendaAtiva: vendaAtiva, produtosVendaAtiva: produtosVendaAtiva });
-        })
-            .catch((err) => console.log(err))
+            await Produto.findAll({
+                where: {
+                    [Op.or]: [
+                        { nomeProduto: { [Op.like]: `%${produto}%` } },
+                        { id: { [Op.like]: `%${produto}%` } }
+                    ]
+                }
+            }).then((data) => {
+                const produtos = data.map((result) => result.get({ plain: true }))
+                const vendaAtiva = req.vendaAtiva.toJSON()
+                let produtosVendaAtiva = req.produtosVendaAtiva
+                res.render('venda/venda', { produtos, vendaAtiva: vendaAtiva, produtosVendaAtiva: produtosVendaAtiva });
+            })
+                .catch((err) => console.log(err))
+        } catch (error) {
+            console.log(error.message);
+            res.send(error.message);
+        }
     }
 
     static async addProduto(req, res) {
-        // Encontra o produto
-        const id = req.body.id; //id do produto
-        const produto = await Produto.findByPk(id)
+        try {
+            // Encontra o produto
+            const id = req.body.id; //id do produto
+            const produto = await Produto.findByPk(id)
 
-        // Verifica se o produto existe
-        if (!produto) {
-            res.status(404).send('Produto não encontrado.')
-            return
-        }
-
-        // Encontra a venda ativa
-        const vendaAtiva = req.vendaAtiva
-
-        // Verifica se o produto já está na venda ativa
-        const vendaProdutoExistente = await VendaProduto.findOne({
-            where: {
-                VendaId: vendaAtiva.id,
-                ProdutoId: produto.id
+            // Verifica se o produto existe
+            if (!produto) {
+                res.status(404).send('Produto não encontrado.')
+                return
             }
-        })
 
-        if (vendaProdutoExistente) {
-            // O produto já está na venda, incrementa a quantidade
-            let qtd = parseFloat(vendaProdutoExistente.qtd)
-            qtd += parseFloat(req.body.qtd)
-            vendaProdutoExistente.qtd = qtd
-            await vendaProdutoExistente.save();
-        } else {
-            // Adiciona o produto a venda
-            const vendaProduto = {
-                qtd: req.body.qtd,
-                valor: produto.valorUnitario,
-                VendaId: vendaAtiva.id,
-                ProdutoId: produto.id
+            // Encontra a venda ativa
+            const vendaAtiva = req.vendaAtiva
+
+            // Verifica se o produto já está na venda ativa
+            const vendaProdutoExistente = await VendaProduto.findOne({
+                where: {
+                    VendaId: vendaAtiva.id,
+                    ProdutoId: produto.id
+                }
+            })
+
+            if (vendaProdutoExistente) {
+                // O produto já está na venda, incrementa a quantidade
+                let qtd = parseFloat(vendaProdutoExistente.qtd)
+                qtd += parseFloat(req.body.qtd)
+                vendaProdutoExistente.qtd = qtd
+                await vendaProdutoExistente.save();
+            } else {
+                // Adiciona o produto a venda
+                const vendaProduto = {
+                    qtd: req.body.qtd,
+                    valor: produto.valorUnitario,
+                    VendaId: vendaAtiva.id,
+                    ProdutoId: produto.id
+                };
+
+                await VendaProduto.create(vendaProduto);
+            }
+
+            // Atualiza a qtd de produtos em estoque
+            let qtdEstoque = parseInt(produto.qtd)
+            let qtdVenda = parseInt(req.body.qtd)
+            let qtdEstoqueAtualizada = qtdEstoque - qtdVenda
+            produto.qtd = qtdEstoqueAtualizada
+            produto.save()
+
+
+            let valorTotal = parseFloat(vendaAtiva.valorTotal)
+            valorTotal += parseFloat(produto.valorUnitario * req.body.qtd)
+
+            const vendaAtualizada = {
+                id: vendaAtiva.id,
+                status: vendaAtiva.status,
+                data: vendaAtiva.data,
+                valorTotal: valorTotal
             };
 
-            await VendaProduto.create(vendaProduto);
+            await Venda.update(vendaAtualizada, { where: { status: true, UsuarioId: req.session.userid } })
+            vendaAtiva.save()
+
+            // Envia todos os produtos da venda atiava para a view
+            await VendaProduto.findAll({
+                where: {
+                    VendaId: vendaAtiva.id
+                },
+                include: [{
+                    model: Produto
+                }]
+            }).then((data) => {
+                const produtos = data.map((result) => result.get({ plain: true }))
+                res.redirect(303, "/venda/criar/detalhes")
+            })
+        } catch (error) {
+            console.log(error.message);
+            res.send(error.message);
         }
-
-        // Atualiza a qtd de produtos em estoque
-        let qtdEstoque = parseInt(produto.qtd)
-        let qtdVenda = parseInt(req.body.qtd)
-        let qtdEstoqueAtualizada = qtdEstoque - qtdVenda
-        produto.qtd = qtdEstoqueAtualizada
-        produto.save()
-
-
-        let valorTotal = parseFloat(vendaAtiva.valorTotal)
-        valorTotal += parseFloat(produto.valorUnitario * req.body.qtd)
-
-        const vendaAtualizada = {
-            id: vendaAtiva.id,
-            status: vendaAtiva.status,
-            data: vendaAtiva.data,
-            valorTotal: valorTotal
-        };
-
-        await Venda.update(vendaAtualizada, { where: { status: true, UsuarioId: req.session.userid } })
-        vendaAtiva.save()
-
-        // Envia todos os produtos da venda atiava para a view
-        await VendaProduto.findAll({
-            where: {
-                VendaId: vendaAtiva.id
-            },
-            include: [{
-                model: Produto
-            }]
-        }).then((data) => {
-            const produtos = data.map((result) => result.get({ plain: true }))
-            res.redirect(303, "/venda/criar/detalhes")
-        })
 
     }
 
@@ -267,32 +297,37 @@ module.exports = class VendaController {
     }
 
     static finalizarVenda(req, res) {
-        // Encontra a venda ativa ,desconto  e forma de pagamento
-        vendaAtiva = req.vendaAtiva.toJSON()
-        const id = req.vendaAtiva.id // id da venda
-        const desconto = parseFloat(req.body.desconto)
-        const formaPagamento = req.body.formaPagamento
+        try {
+            // Encontra a venda ativa ,desconto  e forma de pagamento
+            vendaAtiva = req.vendaAtiva.toJSON()
+            const id = req.vendaAtiva.id // id da venda
+            const desconto = parseFloat(req.body.desconto)
+            const formaPagamento = req.body.formaPagamento
 
-        // Se houver desconto, aplica na venda
-        if (desconto) {
-            let valorFinal = parseFloat(vendaAtiva.valorTotal - desconto)
-            vendaAtiva = {
-                status: false,
-                valorTotal: valorFinal,
-                formaPagamento: formaPagamento
+            // Se houver desconto, aplica na venda
+            if (desconto) {
+                let valorFinal = parseFloat(vendaAtiva.valorTotal - desconto)
+                vendaAtiva = {
+                    status: false,
+                    valorTotal: valorFinal,
+                    formaPagamento: formaPagamento
+                }
+            } else { // Caso não haja, finaliza a venda
+                vendaAtiva = {
+                    status: false,
+                    formaPagamento: formaPagamento
+                }
             }
-        } else { // Caso não haja, finaliza a venda
-            vendaAtiva = {
-                status: false,
-                formaPagamento: formaPagamento
-            }
+
+            // Altera o status da venda para false
+            Venda.update(vendaAtiva, { where: { status: true, UsuarioId: req.session.userid } }).then(() => {
+                res.redirect('/venda/visualizar/' + id)
+            })
+                .catch((err) => console.log(err))
+        } catch (error) {
+            console.log(error.message);
+            res.send(error.message);
         }
-
-        // Altera o status da venda para false
-        Venda.update(vendaAtiva, { where: { status: true, UsuarioId: req.session.userid } }).then(() => {
-            res.redirect('/venda/visualizar/' + id)
-        })
-            .catch((err) => console.log(err))
     }
 
     static async removerVenda(req, res) {
@@ -327,17 +362,22 @@ module.exports = class VendaController {
 
             res.redirect('/venda');
         } catch (error) {
-            console.log(error);
-            res.status(404).send('Erro ao excluir a venda. \n' + error)
+            console.log(error.message);
+            res.status(404).send('Erro ao excluir a venda. \n' + error.message)
         }
     }
 
     static cancelarVenda(req, res) {
-        Venda.destroy({ where: { status: true, UsuarioId: req.session.userid } })
-            .then(() => {
-                res.redirect('/venda')
-            })
-            .catch((err) => console.log(err))
+        try {
+            Venda.destroy({ where: { status: true, UsuarioId: req.session.userid } })
+                .then(() => {
+                    res.redirect('/venda')
+                })
+                .catch((err) => console.log(err))
+        } catch (error) {
+            console.log(error.message);
+            res.send(error.message);
+        }   
     }
 
     static async mostrarDetalhes(req, res) {
@@ -393,7 +433,7 @@ module.exports = class VendaController {
             res.render("venda/visualizar", { venda: dadosVenda, cliente: dadosCliente, produtos: produtos, vendedor: dadosUsuario });
 
         } catch (error) {
-            console.log(error)
+            console.log(error.message)
             res.redirect('/')
         }
     }

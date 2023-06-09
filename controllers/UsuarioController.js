@@ -5,56 +5,76 @@ const bcrypt = require('bcryptjs') // Criptografa a senha via hashmap
 
 module.exports = class UsuarioController {
     static mostrarUsuarios(req, res) {
+        try {
+            // order resultados, novos registros primeiro
+            let order = 'DESC'
 
-        // order resultados, novos registros primeiro
-        let order = 'DESC'
-
-        Usuario.findAll({
-            order: [['createdAt', order]],
-            limit: 1000,
-        })
-            .then((data) => {
-                let qtd = data.length
-
-                if (qtd === 0) {
-                    qtd = false
-                }
-
-                const resultado = data.map((result) => result.get({ plain: true }))
-
-                res.render('usuario/listar', { resultado, qtd })
+            Usuario.findAll({
+                order: [['createdAt', order]],
+                limit: 1000,
             })
-            .catch((err) => console.log(err))
+                .then((data) => {
+                    let qtd = data.length
+
+                    if (qtd === 0) {
+                        qtd = false
+                    }
+
+                    const resultado = data.map((result) => result.get({ plain: true }))
+
+                    res.render('usuario/listar', { resultado, qtd })
+                })
+                .catch((err) => console.log(err))
+        } catch (error) {
+            console.log(error.message);
+            res.send(error.message);
+        }
+
     }
 
     static criarUsuario(req, res) {
-        res.render('usuario/criar')
+        try {
+            res.render('usuario/criar')
+        } catch (error) {
+            console.log(error.message);
+            res.send(error.message);
+        }
     }
 
     static criarUsuarioPost(req, res) {
-        console.log(req.body)
+        try {
+            // console.log(req.body)
 
-        const salt = bcrypt.genSaltSync(10)
-        const hashSenha = bcrypt.hashSync(req.body.senha, salt) //Cria o hash
+            const salt = bcrypt.genSaltSync(10)
+            const hashSenha = bcrypt.hashSync(req.body.senha, salt) //Cria o hash
 
-        const usuario = {
-            nome: req.body.nome,
-            senha: hashSenha,
+            const usuario = {
+                nome: req.body.nome,
+                senha: hashSenha,
+            }
+            Usuario.create(usuario)
+                .then(() => {
+                    res.redirect('/usuario/')
+                })
+                .catch((err) => console.log(err))
+        } catch (error) {
+            console.log(error.message);
+            res.send(error.message);
         }
-        Usuario.create(usuario)
-            .then(() => {
-                res.redirect('/usuario/')
-            })
-            .catch((err) => console.log(err))
     }
 
     static editarUsuario(req, res) {
-        const id = req.params.id
-        Usuario.findOne({ where: { id: id }, raw: true })
-            .then((usuario) => {
-                res.render('usuario/editar', { usuario })
-            })
-            .catch((err) => console.log(err))
+        try {
+            const id = req.params.id
+            Usuario.findOne({ where: { id: id }, raw: true })
+                .then((usuario) => {
+                    res.render('usuario/editar', { usuario })
+                })
+                .catch((err) => console.log(err))
+        } catch (error) {
+            console.log(error.message);
+            res.send(error.message);
+        }
     }
 
     static editarUsuarioPost(req, res) {
@@ -75,12 +95,17 @@ module.exports = class UsuarioController {
     }
 
     static removerUsuario(req, res) {
-        const id = req.body.id
-        Usuario.destroy({ where: { id: id } })
-            .then(() => {
-                res.redirect('/usuario')
-            })
-            .catch((err) => console.log(err))
+        try {
+            const id = req.body.id
+            Usuario.destroy({ where: { id: id } })
+                .then(() => {
+                    res.redirect('/usuario')
+                })
+                .catch((err) => console.log(err))
+        } catch (error) {
+            console.log(error.message);
+            res.send(error.message);
+        }
     }
 
     static async loginPost(req, res) {
