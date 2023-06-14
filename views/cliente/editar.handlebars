@@ -1,0 +1,128 @@
+<title>Editar Cliente #{{cliente.id}}</title>
+<div class="container-xl">
+    <div class="table-responsive">
+        <div class="table-wrapper" style="max-width: 800px; margin: auto;">
+            <div class="table-title">
+                <div class="row">
+                    <div class="col-mb-3">
+                        <h4>Editar Cliente</h4>
+                    </div>
+                </div>
+            </div>
+
+            <form action="/cliente/editarPost" method="POST">
+                <input type="hidden" name="id" value={{cliente.id}}>
+                        <div class="form-control">
+                <div class="row">
+                    <div class="col">
+                        <div class="mb-3">
+                            <label for="nome" class="form-label">Nome/Razao Social*</label>
+                            <input type="text" class="form-control" name="nome" placeholder="Ex: Cliente LTDA" required value={{cliente.nome}}>
+                        </div>
+                    </div>
+                        <div class="col">
+                            <div class="mb-3">
+                                <label for="tipo" class="form-label">Tipo (F ou J)*</label>
+                                <select class="form-select" name="tipo" required value={{cliente.tipo}}>
+                                    <option value="">Selecione</option>
+                                    <option value="F">F</option>
+                                    <option value="J">J</option>
+                                </select>
+                            </div>  
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6 mb-3">
+                        <label for="cpfCnpj" class="form-label">CPF/CNPJ*</label>
+                        <input type="text" class="form-control" name="cpfCnpj" placeholder="Ex: 12345678000123" required value={{cliente.cpfCnpj}}>
+                    </div>
+                    <div class="col-sm-6 mb-3">
+                        <label for="telefone" class="form-label">Telefone*</label>
+                        <input type="text" class="form-control" name="telefone" placeholder="Ex: 4712345678" required value={{cliente.telefone}}>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6 mb-3">
+                        <label for="email" class="form-label">E-mail</label>
+                        <input type="email" class="form-control" name="email" placeholder="Ex: joao@joao.com" value={{cliente.email}}>
+                    </div>
+                    <div class="col-sm-6 mb-3">
+                        <label for="uf" class="form-label">UF</label>
+                        <select class="form-select" name="uf" required value={{cliente.UF}}>
+                                    <option value="">Selecione</option>
+                                    <option value="AC">AC</option>
+                                    <option value="AL">AL</option>
+                                    <option value="AM">AM</option>
+                                    <option value="AP">AP</option>
+                                    <option value="BA">BA</option>
+                                    <option value="CE">CE</option>
+                                    <option value="DF">DF</option>
+                                    <option value="ES">ES</option>
+                                    <option value="GO">GO</option>
+                                    <option value="MA">MA</option>
+                                    <option value="MG">MG</option>
+                                    <option value="MS">MS</option>
+                                    <option value="MT">MT</option>
+                                    <option value="PA">PA</option>
+                                    <option value="PB">PB</option>
+                                    <option value="PE">PE</option>
+                                    <option value="PI">PI</option>
+                                    <option value="PR">PR</option>
+                                    <option value="RJ">RJ</option>
+                                    <option value="RN">RN</option>
+                                    <option value="RO">RO</option>
+                                    <option value="RR">RR</option>
+                                    <option value="RS">RS</option>
+                                    <option value="SC">SC</option>
+                                    <option value="SE">SE</option>
+                                    <option value="SP">SP</option>
+                                    <option value="TO">TO</option>
+                        </select>
+                        
+                    </div>
+                    
+                </div>
+                <div class="row">
+                    <div class="col-sm-6 mb-3">
+                        <label for="cidade" class="form-label">Cidade</label>
+                        <input type="text" class="form-control" name="cidade" placeholder="Ex: Canoinhas" value={{cliente.cidade}}>
+                    </div>
+                    <div class="col-sm-6 mb-3">
+                        <label for="bairro" class="form-label">Bairro</label>
+                        <input type="text" class="form-control" name="bairro" placeholder="Ex: Vila Lumber" value={{cliente.bairro}}>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="row">
+                    <div class="col-sm-6 mb-3">
+                        <label for="rua" class="form-label">Rua</label>
+                        <input type="text" class="form-control" name="rua" placeholder="Ex: Rua João da Silva" value={{cliente.rua}}>
+                    </div>
+                    <div class="col-sm-6 mb-3">
+                        <label for="numeroCasa" class="form-label">nº</label>
+                        <input type="text" class="form-control" name="numeroCasa" placeholder="Ex: 123" value={{cliente.numeroCasa}}>
+                    </div>
+                </div>
+                <div class="col-sm-6 mb-3">
+                        <label for="complemento" class="form-label">Complemento</label>
+                        <input type="text" class="form-control" name="complemento" placeholder="Ex: Apt 3" value={{cliente.complemento}}>
+                    </div>
+                </div>
+                <center>
+                <button type="submit" class="btn btn-success"><i class="bi bi-check-circle-fill"></i> Salvar</button>
+                <a href="/cliente" class="btn btn-danger"><i class="bi bi-x-circle-fill"></i> Cancelar</a>
+                </center>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+                <center>
+                <button type="submit" class="btn btn-success"><i class="bi bi-check-circle-fill"></i> Salvar</button>
+                <a href="/cliente" class="btn btn-danger"><i class="bi bi-x-circle-fill"></i> Cancelar</a>
+                </center>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
