@@ -1,0 +1,96 @@
+<title>Visualizar Venda #{{venda.id}}</title>
+<div class="container" id="recibo">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="mb-0">VENDA Nº {{venda.id}}</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <p class="m-1"><strong>VENDA</strong></p>
+                            <p class="m-1">DATA: {{venda.data}}</p>
+                            <div id="status"></div>
+                            <p class="m-1">PAGAMENTO: {{venda.formaPagamento}}</p>
+                        </div>
+                        <div class="col-md-3">
+                            <p class="m-1"><strong>CLIENTE</strong></p>
+                            <p class="m-1">{{cliente.nome}}</p>
+                            <p class="m-1">CPF/CNPJ: {{cliente.cpfCnpj}}</p>
+                        </div>
+                        {{!-- Parte de usuários - À FAZER --}}
+                        <div class="col-md-3">
+                            <p class="m-1"><strong>VENDEDOR</strong></p>
+                            <p class="m-1">{{vendedor.nome}}</p>
+                        </div>
+
+                    </div>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>PRODUTO</th>
+                                <th>QTD.</th>
+                                <th>VALOR UNITÁRIO</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each produtos}}
+                            <tr>
+                                <td>{{this.Produto.nomeProduto}}</td>
+                                <td>{{this.qtd}}</td>
+                                <td>{{this.valor}}</td>
+                            </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                    <div class="row justify-content-end">
+                        <div class="col-md-4">
+                            <table class="table">
+                                <tbody>
+                                    <tr>
+                                        <td><strong>VALOR TOTAL: </strong></td>
+                                        <td>R$ {{venda.valorTotal}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container d-flex justify-content-center">
+    <div class="row">
+        <div class="col">
+            <button class="btn btn-outline-secondary" onclick="exportar()"><small>Imprimir/Exportar</small></button>
+            <a href="/venda" class="btn btn-primary" type="button">Fechar</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Botao para exportar o recibo
+    function exportar() {
+        // Pega o HTML da pagina
+        const view = document.getElementById("recibo").innerHTML;
+
+        // Abre outra guia com a view
+        const exportar = window.open("");
+        exportar.document.write(view);
+        exportar.print();
+    }
+
+    // Ajusta o status da venda
+    let status = {{ venda.status }}.toString()
+    if (status == 'false') {
+        let html = `<p class="m-1">STATUS: Finalizada</p>`
+        document.getElementById("status").innerHTML = html
+    } else if (status == 'true') {
+        let html = `<p class="m-1">STATUS: Ativa</p>`
+        document.getElementById("status").innerHTML = html
+    }
+
+
+</script>

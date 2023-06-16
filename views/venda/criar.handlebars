@@ -1,3 +1,4 @@
+<title>Nova Venda</title>
 <div class="container-sm">
     <div class="table-responsive">
         <div class="table-wrapper" style="margin: auto;">
@@ -9,33 +10,119 @@
                 </div>
             </div>
 
-            <form action="/venda/criarPost" method="POST">
+            <form action="/venda/criar/detalhes" method="POST">
                 <div class="form-control">
-                    <div class="mb-3">
-                        <label for="data" class="form-label">Data</label>
-                        <input type="date" class="form-control" name="data" value="{{data_atual}}" required>
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <label for="data" class="form-label">Data</label>
+                            <input type="date" class="form-control" name="data" value="{{data_atual}}" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <input type="hidden" name="clienteId" id="clienteId" value="" required>
+                            <label for="clienteInput" class="form-label">Cliente</label>
+                            <div class="input-group">
+                                <input type="text" name="cliente" id="clienteInput" class="form-control" value=""
+                                    placeholder="Digite o nome ou CPF/CNPJ do cliente..." autocomplete="off" required>
+                                <button type="button" id="buttonRemoverCliente" class="btn disabled input-group-append" title="Limpar" onclick="removerCliente()"> 
+                                    <i class="bi bi-trash3"></i>
+                                </button>
+                            </div>
+                            <div id="clientes"></div>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="data" class="form-label">Cliente</label>
-                        <select class="form-select" aria-label="cliente" name="cliente" required>
-                            <option selected>Selecione o cliente</option>
-                            {{#each clientes}}
-                            <option value="{{this.id}}">{{this.id}}. {{this.nome}}</option>
-                            {{/each}}
-                        </select>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <center>
+                                <button type="submit" class="btn btn-success"><i class="bi bi-check-circle-fill"></i>
+                                    Iniciar Venda</button>
+                                <a href="/venda" class="btn btn-danger"><i class="bi bi-x-circle-fill"></i> Cancelar</a>
+                            </center>
+                        </div>
                     </div>
-                    <center>
-                        <button type="submit" class="btn btn-success"><i class="bi bi-check-circle-fill"></i> Iniciar Venda</button>
-                        <a href="/venda" class="btn btn-danger"><i class="bi bi-x-circle-fill"></i> Cancelar</a>
-                    </center>
                 </div>
             </form>
+
         </div>
     </div>
 </div>
 
-
 <script>
+    // Variavel input Cliente
+    let clienteInput = document.getElementById("clienteInput")
+    let clienteId = document.getElementById("clienteId")
+    let buttonRemoverCliente = document.getElementById("buttonRemoverCliente")
+
+    // A cada letra digitada realiza uma consulta
+    clienteInput.onkeyup = function () {
+        let query = clienteInput.value
+        procurarCliente(query)
+    }
+
+    // Procura o cliente no banco e exibe os resultados
+    async function procurarCliente(query = "") {
+        try {
+            if (query == "" | query == " ") {
+                return
+            }
+
+            const response = await fetch(`/venda/criar/procurarCliente?cliente=${query}`)
+            const data = await response.json()
+            clientes = data.clientes
+
+            let html = `<ul id="clientesResult" class="list-group position-absolute">`
+            clientes.forEach(cliente => {
+                html += `<a type="button" title="Selecionar" onclick="atualizarInput(${cliente.id})" class="list-group-item list-group-item-action">${cliente.nome} | CPF/CNPJ: ${cliente.cpfCnpj}</a>`
+            })
+            html += `</ul>`
+
+            document.getElementById("clientes").innerHTML = html
+        }
+        catch (error) {
+            console.log(error)
+        }
+    }
+
+    // Atualiza o input
+    function atualizarInput(id) {
+        // Enviar para o controller o id do cliente
+        clienteId.value = id
+
+        // Encontra o cliente
+        cliente = clientes.find(item => item.id == id)
+
+        // Atualiza a view com os dados do cliente selecionado
+        clienteInput.value = `${cliente.nome} | CPF/CNPJ: ${cliente.cpfCnpj}`
+        clienteInput.disabled = true
+        
+        // Deixa o botão limpar habilitado
+        buttonRemoverCliente.classList.remove("disabled")
+
+        fecharResultados()
+    }
+
+    // Ao clicar em uma opção, fecha os outros resultados
+    function fecharResultados() {
+        let clientesResult = document.getElementById("clientesResult")
+        if (clientesResult) {
+            clientesResult.remove()
+        }
+    }
+
+    // Limpa o input
+    function removerCliente(){
+        // retorna os valores para o estado inicial
+        clienteId.value = ""
+        clienteInput.value = ""
+        clienteInput.disabled = false
+        
+        // desabilita o botão de limpar
+        buttonRemoverCliente.classList.add("disabled")
+    }
+
+    // Ao clicar na tela, fecha os resultados
+    window.addEventListener("click", function (event) {
+        fecharResultados()
+    })
 
 
 

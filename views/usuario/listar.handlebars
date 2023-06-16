@@ -1,14 +1,14 @@
-<title>Clientes</title>
+<title>Usuarios</title>
 <div class="container-xl">
     <div class="table-responsive">
         <div class="table-wrapper">
             <div class="table-title">
                 <div class="row">
                     <div class="col-sm-5">
-                        <h4>Clientes</h4>
+                        <h4>Usuarios</h4>
                     </div>
                     <div class="col-sm-7">
-                        <a href="/cliente/criar" class="btn btn-success"><i class="bi bi-plus-circle-fill"></i><span>
+                        <a href="/usuario/criar" class="btn btn-success"><i class="bi bi-plus-circle-fill"></i><span>
                                 Novo</span></a>
                     </div>
                 </div>
@@ -19,17 +19,8 @@
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Tipo</th>
                         <th>Nome</th>
-                        <th>CPF/CNPJ</th>
-                        <th>Telefone</th>
-                        <th>E-mail</th>
-                        <th>Rua</th>
-                        <th>Nº</th>
-                        <th>Complemento</th>
-                        <th>Bairro</th>
-                        <th>Cidade</th>
-                        <th>UF</th>
+                        <th>Senha</th>
                         <th>Ações</th>
                     </tr>
                 </thead>
@@ -37,20 +28,11 @@
                     {{#each resultado}}
                     <tr>
                         <td>{{this.id}}</td>
-                        <td>{{this.tipo}}</td>
                         <td>{{this.nome}}</td>
-                        <td>{{this.cpfCnpj}}</td>
-                        <td>{{this.telefone}}</td>
-                        <td>{{this.email}}</td>
-                        <td>{{this.rua}}</td>
-                        <td>{{this.numeroCasa}}</td>
-                        <td>{{this.complemento}}</td>
-                        <td>{{this.bairro}}</td>
-                        <td>{{this.cidade}}</td>
-                        <td>{{this.uf}}</td>
+                        <td>{{this.senha}}</td>
                         <td>
                             <span class="actions">
-                                <a href="/cliente/editar/{{this.id}}" data-title="Editar"><i class="bi bi-pencil-fill"
+                                <a href="/usuario/editar/{{this.id}}" data-title="Editar"><i class="bi bi-pencil-fill"
                                         id="lapis"></i></a>
                                 <button type="button" onclick="atualizarFormModal({{this.id}})" data-toggle="tooltip"
                                     data-placement="top" data-title="Excluir" data-bs-toggle="modal"
@@ -83,7 +65,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-                    <form action="/cliente/remover" method="post">
+                    <form action="/usuario/remover" method="post">
                         <input type="hidden" id="inputFormModal" name="id" value="">
                         <button type="submit" class="btn btn-primary">Excluir</button>
                     </form>
