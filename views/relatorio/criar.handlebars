@@ -1,0 +1,39 @@
+<title>Relatórios</title>
+
+<div class="row m-3 p-3">
+    
+    <div class="col-sm-6 mb-3 mb-sm-0">
+        <form action="/relatorio/faturamento" method="get">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Faturamento</h5>
+                    <div class="input-group mb-3">
+                        <label for="dataInicial" class="m-2">Data Inicial</label>
+                        <input class="form-control" type="date" name="dataInicial" id="dataInicial" required>
+                        <label for="dataFinal" class="m-2">Data Final</label>
+                        <input class="form-control" type="date" name="dataFinal" id="dataFinal" required>
+                    </div>                    
+                    <button type="submit" class="btn btn-primary">Gerar Relatório</button>
+                </div>
+            </div>
+        </form>
+    </div>
+{{!-- 
+    <div class="col-sm-6 mb-3 mb-sm-0">
+        <form action="/relatorio/" method="post">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Vendas / Produto</h5>
+                    <div class="input-group mb-3">
+                        <label for="dataInicial" class="m-2">Data Inicial</label>
+                        <input class="form-control" type="date" name="dataInicial" id="dataInicial" required>
+                        <label for="dataFinal" class="m-2">Data Final</label>
+                        <input class="form-control" type="date" name="dataFinal" id="dataFinal" required>
+                    </div>                    
+                    <button type="submit" class="btn btn-primary">Gerar Relatório</button>
+                </div>
+            </div>
+        </form>
+    </div> --}}
+    
+</div>

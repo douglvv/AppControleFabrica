@@ -1,0 +1,134 @@
+<title>Início</title>
+<div class="container-xl">
+
+    <div class="table-title">
+        <h4>Dashboard</h4>
+        <h5>{{dataAtual}}</h5>
+    </div>
+
+    {{!-- CARDS --}}
+    <div class="row mb-3">
+        <div class="col-md-3">
+            <div class="card dashboard-cards">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col d-flex justify-content-center align-items-center">
+                            <h5 class="card-text dashboard-cards-text"><small>Vendas Dia: </small><br>{{qtdVendas}}
+                            </h5>
+                        </div>
+                        <div class="col d-flex justify-content-center align-items-center">
+                            <i class="bi bi-cart-plus fs-4 dashboard-card-icon"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card dashboard-cards">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col d-flex justify-content-center align-items-center">
+                            <h5 class="card-text dashboard-cards-text"><small>Receita Dia:
+                                </small><br>R${{faturamentoDia}}</h5>
+                        </div>
+                        <div class="col d-flex justify-content-center align-items-center">
+                            <i class="bi bi-cash-coin fs-4 dashboard-card-icon"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card dashboard-cards">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col d-flex justify-content-center align-items-center">
+                            <h5 class="card-text dashboard-cards-text"><small>Estoque: </small><br>{{qtdProdutos}}
+                                und.</h5>
+                        </div>
+                        <div class="col d-flex justify-content-center align-items-center">
+                            <i class="bi bi-box-seam fs-4 dashboard-card-icon"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card dashboard-cards">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col d-flex justify-content-center align-items-center">
+                            <h5 class="card-text dashboard-cards-text"><small>Nº Clientes:
+                                </small><br>{{qtdClientes}}</h5>
+                        </div>
+                        <div class="col d-flex justify-content-center align-items-center">
+                            <i class="bi bi-person-circle fs-4 dashboard-card-icon"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="charts">
+        <canvas id="canvasVendas"></canvas>
+    </div>
+</div>
+{{!-- Chart.js script --}}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    let canvasVendas = document.getElementById("canvasVendas"); // Canvas que será usado para o gráfico
+
+    async function fetchChartData() { // Faz o fetch nos dados do banco para criar o gráfico
+        try {
+            const response = await fetch('http://localhost:8080/dadosChart');
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    async function createChart() { // Definições do gráfico de vendas
+        const dadosChart = await fetchChartData(); // Recebe os dados do banco
+        //Mapeia os dados
+        const dias = dadosChart.map(item => item.dia);
+        const faturamentoDias = dadosChart.map(item => item.faturamento);
+
+        new Chart(canvasVendas, {
+            type: 'bar',
+            data: {
+                labels: dias, // Linha x (horizontal)
+                datasets: [{
+                    label: 'Receita', // Titulo linha Y (vertical)
+                    data: faturamentoDias, // Dados da linha Y
+                    backgroundColor: '#8edf9b',
+                    borderColor: '#2a6634',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true, // Inicia a linha Y como 0
+                        title: {
+                            display: true,
+                            text: 'R$'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: false,
+                            text: 'Dias da Semana'
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    createChart();
+
+
+</script>

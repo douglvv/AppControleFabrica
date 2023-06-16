@@ -1,0 +1,41 @@
+<title>Editar Produto #{{produto.id}}</title>
+<div class="container-xl">
+    <div class="table-responsive">
+        <div class="table-wrapper" style="margin: auto; max-width:800px">
+            <div class="table-title">
+                <div class="row">
+                    <div class="col-mb-3">
+                        <h4>Editar Produto</h4>
+                    </div>
+                </div>
+            </div>
+
+            <form action="/produto/editarPost" method="POST">
+                <input type="hidden" name="id" value={{produto.id}}>
+            <div class="form-control">
+                <div class="mb-3">
+                    <label for="nomeProduto" class="form-label">Tipo (F ou J)*</label>
+                    <input type="text" class="form-control" name="nomeProduto" placeholder="Nome do Produto" value={{produto.nomeProduto}} required>
+                </div>
+                <div class="mb-3">
+                    <label for="descricao" class="form-label">Descrição</label>
+                    <input type="text" class="form-control" name="descricao" placeholder="Descrição do Produto" value={{produto.descricao}}>
+                </div>
+                <div class="mb-3">
+                    <label for="qtd" class="form-label">Quantidade</label>
+                    <input type="number" step="1.0" class="form-control" name="qtd" placeholder="Nome do Produto" value={{produto.qtd}} required>
+                </div>
+                <div class="mb-3">
+                    <label for="valorUnitario" class="form-label">Valor Unitário</label>
+                    <input type="text" class="form-control" name="valorUnitario" placeholder="Nome do Produto" value={{produto.valorUnitario}} required>
+                </div>
+                
+                <center>
+                <button type="submit" class="btn btn-success"><i class="bi bi-check-circle-fill"></i> Salvar</button>
+                <a href="/produto" class="btn btn-danger"><i class="bi bi-x-circle-fill"></i> Cancelar</a>
+                </center>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
