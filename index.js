@@ -71,8 +71,8 @@ app.get('/logout', function (req, res) {
 
 // Função para criar um usuário temporário para o primeiro acesso
 app.get('/primeiroAcesso', function(req, res) {
-  const nome = 'modafoker' // Escolher nome do primeiro acesso
-  const senha = 'modafoker' // Escolher senha do primeiro acesso
+  const nome = 'admin' // Escolher nome do primeiro acesso
+  const senha = 'admin' // Escolher senha do primeiro acesso
   const salt = bcrypt.genSaltSync(10)
   const hashSenha = bcrypt.hashSync(senha, salt) //Cria o hash
 
