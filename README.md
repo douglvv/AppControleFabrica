@@ -1,4 +1,4 @@
-#AppControleFabrica
+# AppControleFabrica
 
 <!---Esses são exemplos. Veja https://shields.io para outras pessoas ou para personalizar este conjunto de escudos. Você pode querer incluir dependências, status do projeto e informações de licença aqui--->
 
@@ -42,4 +42,4 @@ npm install
 npm run start
 ```
 
-[⬆ Voltar ao topo](#AppControleFabrica)<br>
+[⬆ Voltar ao topo](#appControleFabrica)<br>
