@@ -41,5 +41,16 @@ npm install
 ```
 npm run start
 ```
+A partir desse momento o servidor estará rodando
+```
+localhost:8080
+```
+Para fazer o primeiro login, acesse a rota:
 
+```
+localhost:8080/primeiroAcesso
+
+usuário: admin
+senha: admin
+```
 [⬆ Voltar ao topo](#appControleFabrica)<br>
