@@ -1,7 +1,14 @@
+<<<<<<< HEAD
 <title>Novo Produto</title>
 <div class="container-xl">
     <div class="table-responsive">
         <div class="table-wrapper" style="margin: auto; max-width:800px">
+=======
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<div class="container-xl">
+    <div class="table-responsive">
+        <div class="table-wrapper" style="max-width: 600px; margin: auto;">
+>>>>>>> 456656d6306d846126a73eb3098229fb2ae4d763
             <div class="table-title">
                 <div class="row">
                     <div class="col-mb-3">
@@ -9,6 +16,7 @@
                     </div>
                 </div>
             </div>
+<<<<<<< HEAD
 
             <form action="/produto/criarPost" method="POST">
             <div class="form-control">
@@ -29,6 +37,27 @@
                     <label for="valorUnitario" class="form-label">Valor Unitário</label>
                     <input type="text" class="form-control" name="valorUnitario" placeholder="Nome do Produto" required>
                 </div>
+=======
+            <form action="/produto/criarPost" method="POST">
+            <div class="form-control">
+                <div class="mb-3">
+                    <label for="nomeProduto" class="form-label">Nome do Produto</label>
+                    <input type="text" class="form-control" name="nomeProduto" id="nomeProduto" placeholder="Nome do Produto" required maxlength="30">
+                <div class="mb-3">
+                    <label for="descricao" class="form-label">Descrição</label>
+                    <input type="text" class="form-control" name="descricao" placeholder="Descrição do Produto" maxlength="30">
+                </div>
+                <div class="mb-3">
+                    <label for="qtd" class="form-label">Quantidade</label>
+                    <input type="number" step="1.0" class="form-control" name="qtd" placeholder="Quantidade do Produto" required>
+                </div>
+                    </div>
+                <div class="mb-3">
+                    <label for="valorUnitario" class="form-label">Valor Unitário</label>
+                    <input type="number" class="form-control" name="valorUnitario" placeholder="Valor unitário do Produto" step="0.01" min="0" required>
+                    </div>
+                    
+>>>>>>> 456656d6306d846126a73eb3098229fb2ae4d763
                 <center>
                 <button type="submit" class="btn btn-success"><i class="bi bi-check-circle-fill"></i> Salvar</button>
                 <a href="/produto" class="btn btn-danger"><i class="bi bi-x-circle-fill"></i> Cancelar</a>

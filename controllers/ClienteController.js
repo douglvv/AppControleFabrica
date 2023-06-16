@@ -46,8 +46,16 @@ module.exports = class ClienteController {
         }
         Cliente.create(cliente)
             .then(() => {
+<<<<<<< HEAD
                 res.redirect('/cliente/')
             })
+=======
+                req.flash('mensagem', 'Produto criado com sucesso!')
+            req.session.save(() => {
+                res.redirect('/cliente/')
+            })
+        })
+>>>>>>> 456656d6306d846126a73eb3098229fb2ae4d763
             .catch((err) => console.log(err))
     }
 
@@ -77,8 +85,16 @@ module.exports = class ClienteController {
         }
         Cliente.update(cliente, { where: { id: id } })
             .then(() => {
+<<<<<<< HEAD
                 res.redirect('/cliente')
             })
+=======
+                req.flash('mensagem', 'Cliente editado com sucesso!')
+                req.session.save(() => {
+                res.redirect('/cliente')
+            })
+        })
+>>>>>>> 456656d6306d846126a73eb3098229fb2ae4d763
             .catch((err) => console.log(err))
     }
 
@@ -86,8 +102,16 @@ module.exports = class ClienteController {
         const id = req.body.id
         Cliente.destroy({ where: { id: id } })
             .then(() => {
+<<<<<<< HEAD
                 res.redirect('/cliente')
             })
+=======
+                req.flash('mensagem', 'Cliente removido com sucesso!')
+                req.session.save(() => {
+                res.redirect('/cliente')
+            })
+        })
+>>>>>>> 456656d6306d846126a73eb3098229fb2ae4d763
             .catch((err) => console.log(err))
     }
 

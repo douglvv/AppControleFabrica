@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 <title>Produtos</title>
+=======
+
+>>>>>>> 456656d6306d846126a73eb3098229fb2ae4d763
 <div class="container-xl">
     <div class="table-responsive">
         <div class="table-wrapper">
@@ -31,16 +35,25 @@
                 <td>{{this.nomeProduto}}</td>
                 <td>{{this.descricao}}</td>
                 <td>{{this.qtd}}</td>
+<<<<<<< HEAD
                 <td>{{this.valorUnitario}}</td>
+=======
+                <td>{{this.valorUnitario}}$</td>
+>>>>>>> 456656d6306d846126a73eb3098229fb2ae4d763
                 <td>      
                     <span class="actions">
                         <a href="/produto/editar/{{this.id}}" data-title="Editar"><i class="bi bi-pencil-fill" id="lapis"></i></a>
                         <form action="/produto/remover" method="POST">
                             <input type="hidden" name="id" value={{this.id}}>
+<<<<<<< HEAD
                             <button type="button" onclick="atualizarFormModal({{this.id}})" data-toggle="tooltip"
                                 data-placement="top" data-title="Excluir" data-bs-toggle="modal"
                                 data-bs-target="#modalExcluir">
                                     <i class="bi bi-trash3-fill" id="lixeira"></i>
+=======
+                            <button type="submit" data-toggle="tooltip" data-placement="top" data-title="Excluir">
+                                <i class="bi bi-trash3-fill" id="lixeira"></i>
+>>>>>>> 456656d6306d846126a73eb3098229fb2ae4d763
                             </button>
                         </form>
 
@@ -48,14 +61,18 @@
                 </td>
             </tr>
         {{/each}}
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> 456656d6306d846126a73eb3098229fb2ae4d763
         </tbody>
         <tfoot>
         </tfoot>
     </table>
     </div>
     </div>
+<<<<<<< HEAD
             <!-- Modal Excluir -->
     <div class="modal fade" id="modalExcluir" tabindex="-1" aria-labelledby="modalExcluirLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -78,6 +95,8 @@
         </div>
     </div>
     
+=======
+>>>>>>> 456656d6306d846126a73eb3098229fb2ae4d763
     </div>
      <!--Js do datatable com exportações-->
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
@@ -110,10 +129,13 @@
         });
         
       });
+<<<<<<< HEAD
 
       function atualizarFormModal(id = "") { // Passa a id do item a ser excluido para o form do modal
         const inputFormModal = document.getElementById("inputFormModal");
 
         inputFormModal.value = id
     }
+=======
+>>>>>>> 456656d6306d846126a73eb3098229fb2ae4d763
     </script>

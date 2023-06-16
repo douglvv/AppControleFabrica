@@ -3,9 +3,14 @@ const exphbs = require("express-handlebars");
 const session = require("express-session");
 const FileStore = require("session-file-store")(session);
 const flash = require("express-flash");
+<<<<<<< HEAD
 const bcrypt = require('bcryptjs')
 //ol
 //Instancia o express
+=======
+
+//Instancia o express,handlebars e mid dos formulários
+>>>>>>> 456656d6306d846126a73eb3098229fb2ae4d763
 const app = express();
 
 const conn = require("./db/conn");
@@ -13,7 +18,10 @@ const conn = require("./db/conn");
 app.engine("handlebars", exphbs.engine());
 app.set("view engine", "handlebars");
 
+<<<<<<< HEAD
 // Middlewares
+=======
+>>>>>>> 456656d6306d846126a73eb3098229fb2ae4d763
 app.use(
   express.urlencoded({
     extended: true,
@@ -21,9 +29,15 @@ app.use(
 );
 
 app.use(express.json());
+<<<<<<< HEAD
 app.use(express.static('public'))
 
 // Middleware controle de sessão
+=======
+
+app.use(express.static('public'))
+//middleware do controle de sessão
+>>>>>>> 456656d6306d846126a73eb3098229fb2ae4d763
 app.use(
   session({
     name: 'session',
@@ -31,7 +45,11 @@ app.use(
     resave: false,
     saveUninitialized: false,
     store: new FileStore({
+<<<<<<< HEAD
       logFn: function () { },
+=======
+      logFn: function () {},
+>>>>>>> 456656d6306d846126a73eb3098229fb2ae4d763
       path: require('path').join(require('os').tmpdir(), 'sessions'),
     }),
     cookie: {
@@ -40,6 +58,7 @@ app.use(
       expires: new Date(Date.now() + 3600000),
       httpOnly: true,
     },
+<<<<<<< HEAD
   }),
 )
 
@@ -59,12 +78,47 @@ const DashboardController = require("./controllers/DashboardController")
 app.get('/', verificaSessao, DashboardController.mostrarDashboard)
 
 // Login
+=======
+  })
+);
+  // flash messages
+app.use(flash());
+
+// Importa os Models para a criação das tabelas
+const Cliente = require("./models/Cliente");
+const Produto = require("./models/Produto");
+const Usuario = require("./models/Usuario");
+
+//importa verifica sessao
+
+const verificaSessao = require("./helpers/sessao").verificaSessao;
+
+//Rota inicial da aplicação - antes do listen
+// const newLocal = app.get('/', function (req, res) {
+//   if (!req.session.user) {
+//     res.redirect('/login');
+//   } else {
+//     res.render('views\home');
+//   }
+// });
+
+app.get('/', function (req, res) {
+  if (verificaSessao) {
+    res.render('home');
+  } else {
+    res.redirect('/login');
+  
+  }
+});
+
+>>>>>>> 456656d6306d846126a73eb3098229fb2ae4d763
 app.get('/login', function (req, res) {
   res.render('login', { layout: false });
 });
 
 // Logout
 app.get('/logout', function (req, res) {
+<<<<<<< HEAD
   req.session.destroy()
   res.redirect('/login')
 })
@@ -89,12 +143,20 @@ app.get('/primeiroAcesso', function(req, res) {
 
 
 //Rotas
+=======
+  req.session.destroy();
+  res.redirect('/login');
+});
+
+//Rotas dos models
+>>>>>>> 456656d6306d846126a73eb3098229fb2ae4d763
 const clienteRoutes = require("./routes/clienteRoutes");
 app.use("/cliente", clienteRoutes);
 
 const produtoRoutes = require("./routes/produtoRoutes");
 app.use("/produto", produtoRoutes);
 
+<<<<<<< HEAD
 const vendaRoutes = require("./routes/vendaRoutes");
 app.use("/venda", vendaRoutes);
 
@@ -110,6 +172,13 @@ app.use("/dadosChart", verificaSessao, DashboardController.dadosChart)
 
 
 //Inicia a aplicação somente depois de conectar na DB
+=======
+const usuarioRoutes = require("./routes/usuarioRoutes");
+app.use("/usuario", usuarioRoutes);
+
+
+//Inicia (escuta) a aplicação somente depois de conectar ao BD
+>>>>>>> 456656d6306d846126a73eb3098229fb2ae4d763
 conn
   .sync()
   .then(() => {

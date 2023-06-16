@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Tela de Login</title>
+    <style>
+      /* Estilos para o formulário */
+      form {
+        background-color: #f2f2f2;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 20px;
+        width: 300px;
+        margin: 0 auto;
+      }
+      label {
+        display: block;
+        margin-bottom: 10px;
+      }
+      input[type="text"], input[type="password"] {
+        padding: 5px;
+        width: 100%;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        margin-bottom: 20px;
+      }
+      input[type="submit"] {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+      }
+      input[type="submit"]:hover {
+        background-color: #45a049;
+      }
+      /* Estilos para o link de Recuperar Senha */
+      .forgot-password {
+        display: block;
+        text-align: center;
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <form>
+      <h2>Tela de Login</h2>
+      <label for="username">Usuário:</label>
+      <input type="text" id="username" name="username" required>
+      <label for="password">Senha:</label>
+      <input type="password" id="password" name="password" required>
+      <input type="submit" value="Entrar">
+      <a href="#" class="forgot-password">Esqueceu a senha?</a>
+    </form>
+  </body>
+</html>

@@ -37,10 +37,20 @@ module.exports = class ProdutoController {
             qtd: req.body.qtd,
             valorUnitario: req.body.valorUnitario,
         }
+<<<<<<< HEAD
         Produto.create(produto)
             .then(() => {
                 res.redirect('/produto/')
             })
+=======
+        Produto.create(produto) 
+            .then(() => {
+            req.flash('mensagem', 'Produto criado com sucesso!')
+            req.session.save(() => {
+                res.redirect('/produto/')
+            })
+        })
+>>>>>>> 456656d6306d846126a73eb3098229fb2ae4d763
             .catch((err) => console.log(err))
     }
     
@@ -63,8 +73,16 @@ module.exports = class ProdutoController {
         }
         Produto.update(produto, { where: { id: id } })
             .then(() => {
+<<<<<<< HEAD
                 res.redirect('/produto')
             })
+=======
+                req.flash('mensagem', 'Produto alterado com sucesso!')
+                req.session.save(() => {
+                res.redirect('/produto')
+            })
+        })
+>>>>>>> 456656d6306d846126a73eb3098229fb2ae4d763
             .catch((err) => console.log(err))
     }
 
@@ -72,8 +90,16 @@ module.exports = class ProdutoController {
         const id = req.body.id
         Produto.destroy({ where: { id: id } })
             .then(() => {
+<<<<<<< HEAD
                 res.redirect('/produto')
             })
+=======
+                req.flash('mensagem', 'Produto removido com sucesso!')
+                req.session.save(() => {
+                res.redirect('/produto')
+            })
+        })
+>>>>>>> 456656d6306d846126a73eb3098229fb2ae4d763
             .catch((err) => console.log(err))
             
     }

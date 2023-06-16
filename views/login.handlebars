@@ -4,7 +4,11 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<<<<<<< HEAD
   <title>Login</title>
+=======
+  <title>Sistema Pedidos</title>
+>>>>>>> 456656d6306d846126a73eb3098229fb2ae4d763
   <!-- CSS Bootstrap -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">       
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
@@ -20,6 +24,15 @@
 
 <div class="container">
 <div class="container-xl">
+<<<<<<< HEAD
+=======
+     {{#if mensagem}}
+        <br>
+        <div class="alert alert-danger" role="alert" style="max-width: 350px; margin: auto;">
+        {{mensagem}}
+        </div>
+      {{/if}}
+>>>>>>> 456656d6306d846126a73eb3098229fb2ae4d763
     <div class="table-responsive">
         <div class="table-wrapper" style="max-width: 600px; margin: auto;">
             <div class="table-title">
@@ -33,12 +46,21 @@
             <div class="form-control">
                 <div class="mb-3">
                 <div class="mb-3">
+<<<<<<< HEAD
                     <label for="nome" class="form-label">Usuario</label>
                     <input type="text" class="form-control" name="nome" placeholder="" required>
                 </div>
                 <div class="mb-3">
                     <label for="senha" class="form-label">Senha</label>
                     <input type="password" class="form-control" name="senha" placeholder="" required>
+=======
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" name="email" placeholder="Email" required>
+                </div>
+                <div class="mb-3">
+                    <label for="senha" class="form-label">Senha</label>
+                    <input type="password" class="form-control" name="senha" placeholder="Senha" required>
+>>>>>>> 456656d6306d846126a73eb3098229fb2ae4d763
                 </div>
                 <center>
                 <button type="submit" class="btn btn-success"><i class="bi bi-check-circle-fill"></i> Login</button>
